@@ -3,6 +3,13 @@ class TaskController {
     this.taskService = require("./task.service");
   }
 
+  /**
+   * Creates a new task
+   * @param {Object} req.body - Task data to create
+   * @param {Object} res - Response object
+   * @returns {Promise<Object>} - Newly created task
+   * @throws {Error} - If the task is not created successfully
+   */
   async createTask(req, res) {
     try {
       const taskData = req.body;
@@ -15,6 +22,13 @@ class TaskController {
     }
   }
 
+  /**
+   * Retrieves a task by id and user id
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<Object>} - Task that matches the given id and user id
+   * @throws {Error} - If the task is not found
+   */
   async getTask(req, res) {
     try {
       const taskId = req.params.id;
@@ -25,6 +39,13 @@ class TaskController {
     }
   }
 
+  /**
+   * Updates a task by id and user id
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<Object>} - Updated task
+   * @throws {Error} - If the task is not found or updated successfully
+   */
   async updateTask(req, res) {
     try {
       const taskId = req.params.id;
@@ -40,6 +61,13 @@ class TaskController {
     }
   }
 
+  /**
+   * Deletes a task by id and user id
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<Object>} - No return value, task is deleted if found
+   * @throws {Error} - If the task is not found or deleted successfully
+   */
   async deleteTask(req, res) {
     try {
       const taskId = req.params.id;

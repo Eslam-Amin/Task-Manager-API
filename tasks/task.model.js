@@ -21,6 +21,11 @@ const taskSchema = mongoose.Schema(
       trim: true,
       enum: TASK_STATUS,
       required: [true, "task status is required"]
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "task must belong to a user"]
     }
   },
   { timestamps: true }

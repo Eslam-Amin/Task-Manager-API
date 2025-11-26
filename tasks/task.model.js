@@ -19,6 +19,15 @@ const taskSchema = mongoose.Schema(
       enum: TASK_STATUS,
       required: [true, "task status is required"]
     },
+    priority: {
+      type: String,
+      trim: true,
+      enum: TASK_PRIORITY,
+      required: [true, "task priority is required"]
+    },
+    dueDate: {
+      type: Date
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

@@ -1,7 +1,7 @@
 const ApiError = require("../utils/ApiError");
 
-function joiErrorHandler(schema, req) {
-  const { error } = schema.validate(req.body);
+function joiErrorHandler(schema, data) {
+  const { error } = schema.validate(data);
   if (!error) return;
   let message = error.details[0].message.replace(/"/g, "").split(" ");
 

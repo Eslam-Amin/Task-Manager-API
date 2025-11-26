@@ -3,6 +3,16 @@ class TaskController {
     this.taskService = require("./task.service");
   }
 
+  async getAllTasks(req, res) {
+    try {
+      const filter = { user: req.user._id };
+      const tasks = await this.taskService.getTasks(filter);
+      res.status(200).json({ data: tasks });
+    } catch (error) {
+      res.status(error.statusCode || 500).json({ error: error.message });
+    }
+  }
+
   /**
    * Creates a new task
    * @param {Object} req.body - Task data to create

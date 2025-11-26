@@ -1,7 +1,7 @@
 const express = require("express");
 
 // User Validators
-const {} = require("./task.validator");
+const taskValidator = require("./task.validator");
 
 const taskController = require("./task.controller");
 
@@ -17,12 +17,12 @@ router.use(protect);
 router
   .route("/")
   .get(taskController.getAllTasks)
-  .post(taskController.createTask);
+  .post(taskValidator.createTask, taskController.createTask);
 
 router
   .route("/:id")
   .get(taskController.getTask)
-  .patch(taskController.createTask)
+  .patch(taskValidator.updateTask, taskController.createTask)
   .delete(taskController.createTask);
 
 module.exports = router;

@@ -1,8 +1,5 @@
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-
-const { TASK_STATUS } = require("../utils/constants");
+const { TASK_STATUS, TASK_PRIORITY } = require("../utils/constants");
 
 const taskSchema = mongoose.Schema(
   {

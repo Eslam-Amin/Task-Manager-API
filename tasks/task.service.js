@@ -37,7 +37,7 @@ class TaskService {
   async getTaskById(id, userId) {
     const task = await this.TaskModel.findOneBy({ _id: id, user: userId });
     if (!task) {
-      throw new Error({ error: "Task not found", statusCode: 404 });
+      throw new Error({ message: "Task not found", statusCode: 404 });
     }
     return task;
   }
@@ -59,7 +59,7 @@ class TaskService {
       }
     );
     if (!task) {
-      throw new Error({ error: "Task not found", statusCode: 404 });
+      throw new Error({ message: "Task not found", statusCode: 404 });
     }
     return task;
   }
@@ -77,7 +77,7 @@ class TaskService {
       user: userId
     });
     if (!task) {
-      throw new Error({ error: "Task not found", statusCode: 404 });
+      throw new Error({ message: "Task not found", statusCode: 404 });
     }
     return;
   }

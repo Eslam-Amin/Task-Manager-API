@@ -16,7 +16,12 @@ class TaskService {
    * @returns {Promise<Task>} - Newly created task
    */
   async createTask(data) {
-    const task = new this.TaskModel(data);
+    const task = new this.TaskModel({
+      ...data,
+      priorityValue: TASK_PRIORITY_VALUE[data.priority.toUpperCase()],
+      statusValue:
+        TASK_STATUS_VALUE[data.status.toUpperCase().replace("-", "_")]
+    });
     return await task.save();
   }
 
@@ -55,6 +60,13 @@ class TaskService {
    * @throws {Error} - If the task is not found
    */
   async updateTask(id, userId, data) {
+    if (data.priority) {
+      data.priorityValue = TASK_PRIORITY_VALUE[data.priority.toUpperCase()];
+    }
+    if (data.status) {
+      data.statusValue =
+        TASK_STATUS_VALUE[data.status.toUpperCase().replace("-", "_")];
+    }
     const task = await this.TaskModel.findByIdAndUpdate(id, data, {
       new: true
     });

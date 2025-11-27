@@ -4,11 +4,20 @@ const taskService = require("./task.service");
 class TaskController {
   async getAllTasks(req, res, next) {
     try {
-      const filter = { user: req.userId };
-      const tasks = await taskService.getTasks(filter);
-      res
-        .status(200)
-        .json({ message: "Tasks fetched successfully", data: tasks });
+      const { tasks, totalTasks, page, limit } = await taskService.getTasks(
+        req.query,
+        req.userId
+      );
+      res.status(200).json({
+        message: "Tasks fetched successfully",
+        pagination: {
+          page,
+          limit,
+          totalDocs: totalTasks,
+          totalPages: Math.ceil(totalTasks / limit)
+        },
+        data: tasks
+      });
     } catch (error) {
       next(error);
     }

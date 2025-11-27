@@ -62,4 +62,24 @@ const userSchema = mongoose.Schema(
 
 userSchema.set("toJSON", { virtuals: true });
 
+userSchema.virtual("fullName").get(function () {
+  if (this.firstName && this.lastName)
+    return this.firstName + " " + this.lastName;
+});
+
+userSchema.virtual("age").get(function () {
+  const currentDate = new Date();
+  const birthDate = new Date(this.dateOfBirth);
+  const age = currentDate.getFullYear() - birthDate.getFullYear();
+  // Adjust age if the birthday hasn't occurred yet this year
+  if (
+    currentDate.getMonth() < birthDate.getMonth() ||
+    (currentDate.getMonth() === birthDate.getMonth() &&
+      currentDate.getDate() < birthDate.getDate())
+  ) {
+    return age - 1;
+  }
+  return age;
+});
+
 module.exports = mongoose.model("User", userSchema);

@@ -3,14 +3,23 @@ const ApiError = require("../utils/ApiError");
 
 class JoiErrorHandler {
   static validate(schema, data) {
-    const { error } = schema.validate(data);
+    const { error } = schema.validate(data, { abortEarly: false });
+
     if (!error) return;
 
-    let message = error.details[0].message.replace(/"/g, "").split(" ");
-    message = message.join(" ").split("_").join(" ");
-    message = `${message.charAt(0).toUpperCase()}${message.slice(1)}`;
+    // Map all errors to readable messages
+    const messages = error.details.map((detail) => {
+      let msg = detail.message
+        .replace(/"/g, "")
+        .split(" ")
+        .join(" ")
+        .split("_")
+        .join(" ");
+      return `${msg.charAt(0).toUpperCase()}${msg.slice(1)}`;
+    });
 
-    throw new ApiError(message, 400);
+    // Throw a single ApiError with all messages joined
+    throw ApiError.badRequest(messages.join(", "));
   }
 }
 

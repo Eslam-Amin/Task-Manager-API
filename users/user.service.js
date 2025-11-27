@@ -28,9 +28,6 @@ class UserService {
       locale: "en",
       strength: 2
     });
-    if (!user) {
-      throw ApiError.notFound(`User is not found`);
-    }
     return user;
   }
 

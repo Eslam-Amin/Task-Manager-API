@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
-const { TASK_STATUS_ENUM, TASK_PRIORITY_ENUM } = require("./task.enum.js");
+const {
+  TASK_STATUS_ENUM,
+  TASK_PRIORITY_ENUM,
+  TASK_PRIORITY,
+  TASK_STATUS
+} = require("./task.enum.js");
 const TaskDTO = require("./task.dto");
 
 const taskSchema = mongoose.Schema(
@@ -29,6 +34,17 @@ const taskSchema = mongoose.Schema(
       enum: TASK_PRIORITY_ENUM,
       required: [true, "task priority is required"]
     },
+    priorityValue: {
+      type: Number,
+      enum: TASK_PRIORITY.map((_, index) => index), // 0: low, 1: medium, 2: high, etc
+      required: [true, "task priority value is required"]
+    },
+    statusValue: {
+      type: Number,
+      enum: TASK_STATUS.map((_, index) => index), // 0: pending, 1: in-progress, 2: completed, etc
+      default: TASK_STATUS_ENUM.PENDING,
+      required: [true, "task status value is required"]
+    },
     dueDate: {
       type: Date
     },
@@ -50,10 +66,18 @@ const taskSchema = mongoose.Schema(
 );
 
 // 1. Text index for search
-taskSchema.index({
-  title: "text",
-  description: "text"
-});
+taskSchema.index(
+  {
+    title: "text",
+    description: "text"
+  },
+  {
+    weights: {
+      title: 3,
+      description: 1
+    }
+  }
+);
 
 // 2. index for filtering
 taskSchema.index({ user: 1 });

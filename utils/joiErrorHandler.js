@@ -1,4 +1,3 @@
-// joiErrorHandler.js
 const ApiError = require("../utils/ApiError");
 
 class JoiErrorHandler {

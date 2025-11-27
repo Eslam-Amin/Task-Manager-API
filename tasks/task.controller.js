@@ -1,15 +1,16 @@
-class TaskController {
-  constructor() {
-    this.taskService = require("./task.service");
-  }
+const TaskDto = require("./task.dto");
+const taskService = require("./task.service");
 
-  async getAllTasks(req, res) {
+class TaskController {
+  async getAllTasks(req, res, next) {
     try {
       const filter = { user: req.user._id };
-      const tasks = await this.taskService.getTasks(filter);
-      res.status(200).json({ data: tasks });
+      const tasks = await taskService.getTasks(filter);
+      res
+        .status(200)
+        .json({ message: "Tasks fetched successfully", data: tasks });
     } catch (error) {
-      res.status(error.statusCode || 500).json({ error: error.message });
+      next(error);
     }
   }
 
@@ -20,15 +21,16 @@ class TaskController {
    * @returns {Promise<Object>} - Newly created task
    * @throws {Error} - If the task is not created successfully
    */
-  async createTask(req, res) {
+  async createTask(req, res, next) {
     try {
       const taskData = { ...req.body, user: req.user._id };
-      const newTask = await this.taskService.createTask(taskData);
+      const newTask = await taskService.createTask(taskData);
       res.status(201).json({
+        message: "Task created successfully",
         data: newTask
       });
     } catch (error) {
-      res.status(error.statusCode || 500).json({ error: error.message });
+      next(error);
     }
   }
 
@@ -39,13 +41,15 @@ class TaskController {
    * @returns {Promise<Object>} - Task that matches the given id and user id
    * @throws {Error} - If the task is not found
    */
-  async getTask(req, res) {
+  async getTask(req, res, next) {
     try {
       const taskId = req.params.id;
-      const task = await this.taskService.getTaskById(taskId, req.user._id);
-      res.status(200).json({ data: task });
+      const task = await taskService.getTaskById(taskId, req.user._id);
+      res
+        .status(200)
+        .json({ message: "Task updated successfully", data: task });
     } catch (error) {
-      res.status(error.statusCode || 500).json({ error: error.message });
+      next(error);
     }
   }
 
@@ -56,18 +60,20 @@ class TaskController {
    * @returns {Promise<Object>} - Updated task
    * @throws {Error} - If the task is not found or updated successfully
    */
-  async updateTask(req, res) {
+  async updateTask(req, res, next) {
     try {
       const taskId = req.params.id;
       const updateData = req.body;
-      const updatedTask = await this.taskService.updateTask(
+      const updatedTask = await taskService.updateTask(
         taskId,
         req.user._id,
         updateData
       );
-      res.status(200).json({ data: updatedTask });
+      res
+        .status(200)
+        .json({ message: "Task updated successfully", data: updatedTask });
     } catch (error) {
-      res.status(error.statusCode || 500).json({ error: error.message });
+      next(error);
     }
   }
 
@@ -78,13 +84,13 @@ class TaskController {
    * @returns {Promise<Object>} - No return value, task is deleted if found
    * @throws {Error} - If the task is not found or deleted successfully
    */
-  async deleteTask(req, res) {
+  async deleteTask(req, res, next) {
     try {
       const taskId = req.params.id;
-      await this.taskService.deleteTask(taskId, req.user._id);
+      await taskService.deleteTask(taskId, req.user._id);
       res.status(200).json({ message: "Task deleted successfully" });
     } catch (error) {
-      res.status(error.statusCode || 500).json({ error: error.message });
+      next(error);
     }
   }
 }

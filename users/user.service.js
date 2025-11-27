@@ -23,6 +23,17 @@ class UserService {
     return user;
   }
 
+  async getUserByEmail(email) {
+    const user = await this.UserModel.findOne({ email }).collation({
+      locale: "en",
+      strength: 2
+    });
+    if (!user) {
+      throw ApiError.notFound(`User is not found`);
+    }
+    return user;
+  }
+
   async updateUser(id, data) {
     const user = await this.UserModel.findByIdAndUpdate(id, data, {
       new: true

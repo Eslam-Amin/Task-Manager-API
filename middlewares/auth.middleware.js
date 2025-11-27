@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const ApiError = require("../utils/ApiError");
+const Hash = require("../utils/hash.js");
 
 class Authentication {
   constructor() {
@@ -16,7 +17,12 @@ class Authentication {
         ApiError.unauthorized("Invalid token, please login again...")
       );
 
-    if (decoded.sessionTokenId !== currentUser.sessionTokenId)
+    const isValidSessionTokenId = await Hash.compareKeys(
+      decoded.sessionTokenId,
+      currentUser.sessionTokenId
+    );
+
+    if (!isValidSessionTokenId)
       return next(
         ApiError.unauthorized("Session expired, please login again...", 401)
       );

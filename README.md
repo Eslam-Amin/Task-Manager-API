@@ -555,7 +555,7 @@ Authorization: <JWT_TOKEN>
 
 You can import the API endpoints into Postman for easier testing.
 
-**Postman Collection:** [View Documentation](https://documenter.getpostman.com/view/23525113/2sB3dLSrAs)
+**Postman Collection:** [View Documentation](https://documenter.getpostman.com/view/23525113/2sB3dLSrFB)
 
 To use the Postman collection:
 

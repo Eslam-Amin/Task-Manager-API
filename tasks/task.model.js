@@ -1,8 +1,5 @@
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-
-const { TASK_STATUS } = require("../utils/constants");
+const { TASK_STATUS, TASK_PRIORITY } = require("../utils/constants");
 
 const taskSchema = mongoose.Schema(
   {
@@ -21,6 +18,20 @@ const taskSchema = mongoose.Schema(
       trim: true,
       enum: TASK_STATUS,
       required: [true, "task status is required"]
+    },
+    priority: {
+      type: String,
+      trim: true,
+      enum: TASK_PRIORITY,
+      required: [true, "task priority is required"]
+    },
+    dueDate: {
+      type: Date
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "task must belong to a user"]
     }
   },
   { timestamps: true }

@@ -37,9 +37,11 @@ class TaskService {
    * @throws {Error} - If the task is not found
    */
   async getTaskById(id, userId) {
-    const task = await this.TaskModel.findOne({ _id: id, user: userId });
+    const task = await this.TaskModel.findById(id);
     if (!task) {
       throw ApiError.notFound(`Task is not found`);
+    } else if (task.user.toString() !== userId) {
+      throw ApiError.forbidden(`You are not allowed to access this task`);
     }
     return task;
   }
@@ -53,15 +55,13 @@ class TaskService {
    * @throws {Error} - If the task is not found
    */
   async updateTask(id, userId, data) {
-    const task = await this.TaskModel.findOneAndUpdate(
-      { _id: id, user: userId },
-      data,
-      {
-        new: true
-      }
-    );
+    const task = await this.TaskModel.findByIdAndUpdate(id, data, {
+      new: true
+    });
     if (!task) {
       throw ApiError.notFound(`Task is not found`);
+    } else if (task.user.toString() !== userId) {
+      throw ApiError.forbidden(`You are not allowed to access this task`);
     }
     return task;
   }
@@ -74,12 +74,11 @@ class TaskService {
    * @throws {Error} - If the task is not found
    */
   async deleteTask(id, userId) {
-    const task = await this.TaskModel.findOneAndDelete({
-      _id: id,
-      user: userId
-    });
+    const task = await this.TaskModel.findByIdAndDelete(id);
     if (!task) {
       throw ApiError.notFound(`Task is not found`);
+    } else if (task.user.toString() !== userId) {
+      throw ApiError.forbidden(`You are not allowed to access this task`);
     }
     return;
   }

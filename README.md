@@ -18,6 +18,8 @@ A comprehensive RESTful API for managing tasks and users with authentication, bu
 - [Authentication](#authentication)
 - [Error Handling](#error-handling)
 - [Logging](#logging)
+- [Testing](#testing)
+- [Future Enhancements](#future-enhancements)
 
 ## <a id="project-description"></a>🎯 Project Description
 
@@ -553,7 +555,7 @@ Authorization: <JWT_TOKEN>
 
 You can import the API endpoints into Postman for easier testing.
 
-**Postman Collection Link:** [Insert your Postman collection link here]
+**Postman Collection:** [View Documentation](https://documenter.getpostman.com/view/23525113/2sB3dLSrAs)
 
 To use the Postman collection:
 
@@ -644,7 +646,7 @@ The application uses Winston for logging:
 - API requests (via Morgan)
 - Errors and exceptions
 
-## 🧪 Testing
+## <a id="testing"></a>🧪 Testing
 
 ### Manual Testing
 
@@ -658,6 +660,37 @@ Use the Swagger UI or Postman collection to test endpoints.
 4. Retrieve tasks with filters
 5. Update a task
 6. Delete a task
+
+## <a id="future-enhancements"></a>🚀 Future Enhancements
+
+The following features are planned for future releases:
+
+### User Verification
+
+- **Email/Phone Verification**: Implement a complete verification system for user accounts
+  - Send verification codes via email or SMS
+  - Verify user email addresses and phone numbers
+  - Require verification before allowing certain actions
+  - Resend verification codes with proper validation
+
+### Rate Limiting
+
+- **Verification Code Endpoint Protection**: Add rate limiting to prevent abuse
+  - Limit the number of verification code requests per user/IP
+  - Implement exponential backoff for repeated requests
+  - Add CAPTCHA for suspicious activity
+  - Track and prevent verification code spam
+
+### Additional Planned Features
+
+- Password reset functionality with secure token generation
+- Two-factor authentication (2FA) support
+- User activity logging and audit trails
+- Advanced task collaboration features
+- Real-time notifications
+- Task templates and recurring tasks
+- File attachments for tasks
+- Task comments and discussions
 
 ## 📄 License
 

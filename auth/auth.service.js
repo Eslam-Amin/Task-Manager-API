@@ -7,12 +7,8 @@ class AuthSerivce {
   }
 
   async registerOne(data) {
-    try {
-      const user = await this.userService.createOne(data);
-      return user;
-    } catch (error) {
-      next(error);
-    }
+    const user = await this.userService.createOne(data);
+    return user;
   }
 
   async login(email, password) {

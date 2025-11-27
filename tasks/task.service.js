@@ -1,3 +1,5 @@
+const ApiError = require("../utils/ApiError");
+
 class TaskService {
   /**
    * Constructor for TaskService class
@@ -35,9 +37,9 @@ class TaskService {
    * @throws {Error} - If the task is not found
    */
   async getTaskById(id, userId) {
-    const task = await this.TaskModel.findOneBy({ _id: id, user: userId });
+    const task = await this.TaskModel.findOne({ _id: id, user: userId });
     if (!task) {
-      throw new Error({ message: "Task not found", statusCode: 404 });
+      throw ApiError.notFound(`Task is not found`);
     }
     return task;
   }
@@ -59,7 +61,7 @@ class TaskService {
       }
     );
     if (!task) {
-      throw new Error({ message: "Task not found", statusCode: 404 });
+      throw ApiError.notFound(`Task is not found`);
     }
     return task;
   }
@@ -77,7 +79,7 @@ class TaskService {
       user: userId
     });
     if (!task) {
-      throw new Error({ message: "Task not found", statusCode: 404 });
+      throw ApiError.notFound(`Task is not found`);
     }
     return;
   }

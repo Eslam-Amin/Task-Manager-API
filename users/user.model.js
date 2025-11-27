@@ -89,11 +89,7 @@ userSchema.virtual("age").get(function () {
 
 userSchema.methods.generateToken = async function () {
   const sessionTokenId = uuid.v4();
-  const tokenExpDate = new Date(); // Get the current date
-  tokenExpDate.setDate(
-    tokenExpDate.getDate() +
-      parseInt(config.JWT_EXPIRATION.toString().slice(0, -1))
-  );
+
   const token = jwt.sign(
     { userId: this._id, sessionTokenId },
     config.JWT_SECRET,

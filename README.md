@@ -561,8 +561,8 @@ To use the Postman collection:
 
 1. Import the collection into Postman
 2. Set up environment variables:
-   - `base_url`: `http://localhost:5050/api/v1`
-   - `token`: Your JWT token (obtained from login)
+   - `BASE_URL`: `http://localhost:5050/api/v1`
+   - `TOKEN`: Your JWT token (obtained from login)
 3. Start testing the endpoints
 
 ## <a id="authentication"></a>🔐 Authentication

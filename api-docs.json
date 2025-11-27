@@ -510,11 +510,6 @@
       "get": {
         "summary": "Get all users",
         "tags": ["Users"],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
         "responses": {
           "200": {
             "description": "Users retrieved successfully",
@@ -534,16 +529,6 @@
                       }
                     }
                   }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid or missing token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }

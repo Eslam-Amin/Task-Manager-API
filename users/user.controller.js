@@ -1,3 +1,18 @@
+/**
+ * User Controller
+ * 
+ * This module handles HTTP requests related to user management.
+ * It processes requests, calls the user service, and sends responses.
+ * 
+ * @module users/user.controller
+ */
+
+/**
+ * User Controller Class
+ * 
+ * Handles HTTP requests for user operations such as retrieving,
+ * updating, and deleting users.
+ */
 class UserController {
   constructor() {
     this.userService = require("./user.service");

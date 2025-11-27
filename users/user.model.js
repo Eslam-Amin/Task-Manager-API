@@ -4,6 +4,7 @@ const uuid = require("uuid");
 const config = require("../config");
 const { GENDER_LIST } = require("../utils/constants");
 const Hash = require("../utils/hash");
+const UserDTO = require("./user.dto");
 
 const userSchema = mongoose.Schema(
   {
@@ -62,10 +63,16 @@ const userSchema = mongoose.Schema(
       default: false
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform(doc, ret) {
+        return UserDTO.toUserDTO(ret);
+      }
+    }
+  }
 );
-
-userSchema.set("toJSON", { virtuals: true });
 
 userSchema.virtual("fullName").get(function () {
   if (this.firstName && this.lastName)

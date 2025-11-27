@@ -9,10 +9,11 @@ const { protect } = require("../middlewares/auth.middleware");
 // Router
 const router = express.Router();
 
+router.route("/").get(userController.getAllUsers);
+
 // Protect
 router.use(protect);
 
-router.route("/").get(userController.getAllUsers);
 router
   .route("/:id")
   .get(userController.getUserById)

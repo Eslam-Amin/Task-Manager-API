@@ -1,62 +1,90 @@
 const ApiError = require("../utils/ApiError");
 const {
-  TASK_STATUS_ENUM,
-  TASK_PRIORITY_ENUM,
-  TASK_PRIORITY_VALUE,
-  TASK_STATUS_VALUE
+  getStatusValue,
+  getPriorityValue,
+  getNormalizedEnum,
+  TASK_STATUS_ENUM
 } = require("./task.enum");
 
 class TaskService {
   /**
    * Constructor for TaskService class
-   * Requires no parameters
-   * Sets the TaskModel property to the Task model
+   *
+   * Initializes the TaskService by loading the Task model.
+   * Requires no parameters.
    */
   constructor() {
     this.TaskModel = require("./task.model");
   }
 
   /**
-   * Create a new task
+   * Create a New Task
+   *
+   * Creates a new task in the database with calculated priority and status values.
+   * Priority and status values are used for efficient sorting.
+   *
    * @param {Object} data - Task data
-   * @returns {Promise<Task>} - Newly created task
+   * @param {string} data.title - Task title
+   * @param {string} data.description - Task description
+   * @param {string} data.priority - Task priority (low, medium, high)
+   * @param {string} data.status - Task status (pending, in-progress, completed)
+   * @param {Date} data.dueDate - Task due date
+   * @param {string} data.user - User ID who owns the task
+   * @returns {Promise<Object>} - Newly created task object
    */
   async createTask(data) {
     const task = new this.TaskModel({
       ...data,
-      priorityValue: TASK_PRIORITY_VALUE[data.priority.toUpperCase()],
-      statusValue:
-        TASK_STATUS_VALUE[data.status.toUpperCase().replace("-", "_")]
+      // Calculate priority value for sorting (0: low, 1: medium, 2: high)
+      priorityValue: getPriorityValue(data.priority)
     });
     return await task.save();
   }
 
   /**
-   * Retrieves all tasks that match the given filter
-   * @param {Object} [filter] - Filter to apply to the tasks
-   * @returns {Promise<Task[]>} - All tasks that match the filter
+   * Get Tasks with Filtering, Pagination, and Sorting
+   *
+   * Retrieves tasks for a specific user with support for:
+   * - Filtering by status and priority
+   * - Full-text search in title and description
+   * - Sorting by priority or status (ascending/descending)
+   * - Pagination
+   *
+   * @param {Object} reqQuery - Query parameters from request
+   * @param {number} [reqQuery.page=1] - Page number
+   * @param {number} [reqQuery.limit=10] - Items per page
+   * @param {string} [reqQuery.status] - Filter by status (pending, in-progress, completed)
+   * @param {string} [reqQuery.priority] - Filter by priority (low, medium, high)
+   * @param {string} [reqQuery.search] - Search text in title and description
+   * @param {string} [reqQuery.sort] - Sort field (priority, status)
+   * @param {string} [reqQuery.order=desc] - Sort order (asc, desc)
+   * @param {string} userId - ID of the user to get tasks for
+   * @returns {Promise<Object>} - Object containing tasks, pagination info
+   * @returns {Array} tasks - Array of task objects
+   * @returns {number} totalTasks - Total number of tasks matching filter
+   * @returns {number} page - Current page number
+   * @returns {number} limit - Items per page
    */
   async getTasks(reqQuery = {}, userId) {
     const page = parseInt(reqQuery.page) || 1;
     const limit = parseInt(reqQuery.limit) || 10;
     const skip = (page - 1) * limit;
     let filter = { user: userId };
-    let sortOption = { createdAt: -1 };
+    let sortOption = { dueDate: -1 };
     if (reqQuery.status) {
-      filter.status =
-        TASK_STATUS_ENUM[reqQuery.status.toUpperCase().replace("-", "_")];
+      filter.status = getNormalizedEnum(reqQuery.status, "status");
     }
     if (reqQuery.priority) {
-      filter.priority = TASK_PRIORITY_ENUM[reqQuery.priority.toUpperCase()];
+      filter.priority = getNormalizedEnum(reqQuery.priority, "priority");
     }
     if (reqQuery.search) {
       filter["$text"] = { $search: reqQuery.search.trim() };
     }
     if (reqQuery.sort) {
-      sortOption = {
-        [`${reqQuery.sort.toLowerCase()}Value`]:
-          reqQuery?.order?.toLowerCase() === "asc" ? 1 : -1
-      };
+      const order = reqQuery.order?.toLowerCase() === "asc" ? 1 : -1;
+      if (reqQuery.sort.toLowerCase() === "duedate")
+        sortOption = { dueDate: order };
+      else sortOption = { [`${reqQuery.sort.toLowerCase()}Value`]: order };
     }
 
     const tasks = await this.TaskModel.find(filter)
@@ -94,11 +122,10 @@ class TaskService {
    */
   async updateTask(id, userId, data) {
     if (data.priority) {
-      data.priorityValue = TASK_PRIORITY_VALUE[data.priority.toUpperCase()];
+      data.priorityValue = getPriorityValue(data.priority);
     }
     if (data.status) {
-      data.statusValue =
-        TASK_STATUS_VALUE[data.status.toUpperCase().replace("-", "_")];
+      data.statusValue = getStatusValue(data.status);
     }
     const task = await this.TaskModel.findByIdAndUpdate(id, data, {
       new: true

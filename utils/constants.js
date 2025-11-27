@@ -1,4 +1,4 @@
-exports.GENDER_LIST = ["Male", "Female"];
+exports.GENDER_LIST = ["male", "female"];
 
 exports.USER = "user";
 

@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const Hash = require("../utils/hash");
 
 class UserService {
   constructor() {
@@ -6,7 +7,7 @@ class UserService {
   }
 
   async createOne(data) {
-    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const hashedPassword = await Hash.hashKey(data.password);
     const user = new this.UserModel({ ...data, password: hashedPassword });
     return await user.save();
   }

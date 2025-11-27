@@ -11,11 +11,18 @@ class UserValidator {
       password: Joi.string().required().min(3).max(255),
       phone: Joi.string()
         .required()
-        .pattern(/^(?:\+?20)?(?:0)?1[0-2]\d{8}$/),
+        .pattern(/^01[0-2]\d{8}$/)
+        .messages({
+          "string.pattern.base":
+            "Phone number must start with 01 and contain 11 digits"
+        }),
       gender: Joi.string()
+        .lowercase()
         .valid(...GENDER_LIST)
         .required(),
-      dateOfBirth: Joi.string().required().isoDate().max("now")
+      dateOfBirth: Joi.date().iso().required().max("now").messages({
+        "date.max": "Date of birth cannot be in the future"
+      })
     });
     joiErrorHandler.validate(schema, req.body);
     next();
@@ -29,11 +36,18 @@ class UserValidator {
       password: Joi.string().optional().min(3).max(255),
       phone: Joi.string()
         .optional()
-        .pattern(/^(?:\+?20)?(?:0)?1[0-2]\d{8}$/),
+        .pattern(/^01[0-2]\d{8}$/)
+        .messages({
+          "string.pattern.base":
+            "Phone number must start with 01 and contain 11 digits"
+        }),
       gender: Joi.string()
+        .lowercase()
         .valid(...GENDER_LIST)
         .optional(),
-      dateOfBirth: Joi.string().optional().isoDate().max("now")
+      dateOfBirth: Joi.date().iso().optional().max("now").messages({
+        "date.max": "Date of birth cannot be in the future"
+      })
     });
     joiErrorHandler.validate(schema, req.body);
     next();

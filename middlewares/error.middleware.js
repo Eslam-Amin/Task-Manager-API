@@ -1,4 +1,5 @@
 const config = require("../config");
+const ApiError = require("../utils/ApiError");
 
 const sendErrorForDev = (err, res) => {
   console.log("🚀 ~ sendErrorForDev ~ err:", err);
@@ -24,6 +25,32 @@ const sendErrorForProd = (err, res) => {
   }
 };
 
+const handleCastErrorDB = (err) => {
+  const message = `Invalid ${err.path}: ${err.value}`;
+  return ApiError.badRequest(message);
+};
+
+const handleDuplicatedFieldsDB = (error) => {
+  const duplicateKey = Object.keys(error.keyPattern)[0]; // Extracting the duplicate key field
+  let message = `${duplicateKey} is already used`;
+
+  return ApiError.badRequest(message);
+};
+
+const handleValidationError = (err) => {
+  const errors = Object.values(err.errors).map((el) => {
+    return el.message;
+  });
+  const message = `Invalid Input Data ${errors.join(". ")}`;
+  return ApiError.badRequest(message);
+};
+
+const handleInvalidJwtSignature = (_) =>
+  ApiError.unauthorized("Invalid token, Please login again ...");
+
+const handleJwtExpired = (_) =>
+  ApiError.unauthorized("Expired token, Please login again ...");
+
 const globalError = (err, req, res, next) => {
   err.success = err.success || false;
   err.statusCode = err.statusCode || 500;
@@ -32,6 +59,12 @@ const globalError = (err, req, res, next) => {
   } else {
     let error = { ...err };
     error.message = err.message;
+    if (err.name === "JsonWebTokenError") error = handleInvalidJwtSignature();
+    if (err.name === "TokenExpiredError") error = handleJwtExpired();
+    if (err.code === 11000) error = handleDuplicatedFieldsDB(err);
+    if (err.name === "CastError") error = handleCastErrorDB(err);
+    if (err.name === "ValidationError") error = handleValidationError(err);
+
     sendErrorForProd(error, res);
   }
 };

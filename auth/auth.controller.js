@@ -1,14 +1,16 @@
+const authService = require("./auth.service");
+const UserDto = require("../users/user.dto");
+
 class AuthController {
-  constructor() {
-    this.authService = require("./auth.service");
-  }
+  constructor() {}
 
   async registerOne(req, res, next) {
     try {
-      const user = await this.authService.registerOne(req.body);
+      const user = await authService.registerOne(req.body);
       res.status(200).json({
         success: true,
-        data: user
+        message: "User created successfully",
+        data: new UserDto(user)
       });
     } catch (error) {
       next(error);
@@ -17,10 +19,14 @@ class AuthController {
 
   async loginOne(req, res, next) {
     try {
-      const { user, token } = await this.authService.login(req.body);
+      const { user, token } = await authService.login(
+        req.body.email,
+        req.body.password
+      );
       res.status(200).json({
         success: true,
-        data: { ...user, token }
+        message: "User logged in successfully",
+        data: { ...new UserDto(user), token }
       });
     } catch (error) {
       next(error);

@@ -39,4 +39,4 @@ const taskSchema = mongoose.Schema(
 
 taskSchema.set("toJSON", { virtuals: true });
 
-module.exports = mongoose.model("User", taskSchema);
+module.exports = mongoose.model("Task", taskSchema);

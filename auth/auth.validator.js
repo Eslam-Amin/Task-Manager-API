@@ -1,12 +1,11 @@
 const Joi = require("joi");
 const joiErrorHandler = require("../utils/joiErrorHandler");
-const { GENDER_LIST } = require("../utils/constants");
 
 class AuthValidator {
   login(req, _, next) {
     const schema = Joi.object({
-      email: Joi.string().required(),
-      password: Joi.string().required()
+      email: Joi.string().email().required().min(3).max(32),
+      password: Joi.string().required().min(3).max(255)
     });
     joiErrorHandler.validate(schema, req.body);
     next();

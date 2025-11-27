@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
-
+const jwt = require("jsonwebtoken");
+const uuid = require("uuid");
+const config = require("../config");
 const { GENDER_LIST } = require("../utils/constants");
+const Hash = require("../utils/hash");
 
 const userSchema = mongoose.Schema(
   {
@@ -29,6 +32,7 @@ const userSchema = mongoose.Schema(
     gender: {
       type: String,
       enum: GENDER_LIST,
+      lowercase: true,
       required: [true, "Gender is required"]
     },
     dateOfBirth: {
@@ -48,6 +52,7 @@ const userSchema = mongoose.Schema(
     verificationCodeExp: Date,
     verificationCodeVerified: Boolean,
     deactivatedAt: Date,
+    sessionTokenId: String,
     verified: {
       type: Boolean,
       default: false
@@ -61,5 +66,40 @@ const userSchema = mongoose.Schema(
 );
 
 userSchema.set("toJSON", { virtuals: true });
+
+userSchema.virtual("fullName").get(function () {
+  if (this.firstName && this.lastName)
+    return this.firstName + " " + this.lastName;
+});
+
+userSchema.virtual("age").get(function () {
+  const currentDate = new Date();
+  const birthDate = new Date(this.dateOfBirth);
+  const age = currentDate.getFullYear() - birthDate.getFullYear();
+  // Adjust age if the birthday hasn't occurred yet this year
+  if (
+    currentDate.getMonth() < birthDate.getMonth() ||
+    (currentDate.getMonth() === birthDate.getMonth() &&
+      currentDate.getDate() < birthDate.getDate())
+  ) {
+    return age - 1;
+  }
+  return age;
+});
+
+userSchema.methods.generateToken = async function () {
+  const sessionTokenId = uuid.v4();
+
+  const token = jwt.sign(
+    { userId: this._id, sessionTokenId },
+    config.JWT_SECRET,
+    {
+      expiresIn: config.JWT_EXPIRATION
+    }
+  );
+  this.sessionTokenId = await Hash.hashKey(sessionTokenId);
+  await this.save();
+  return token;
+};
 
 module.exports = mongoose.model("User", userSchema);

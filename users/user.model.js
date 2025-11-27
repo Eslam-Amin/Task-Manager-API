@@ -29,6 +29,7 @@ const userSchema = mongoose.Schema(
     gender: {
       type: String,
       enum: GENDER_LIST,
+      lowercase: true,
       required: [true, "Gender is required"]
     },
     dateOfBirth: {

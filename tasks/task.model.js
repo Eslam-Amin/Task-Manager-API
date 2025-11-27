@@ -49,4 +49,13 @@ const taskSchema = mongoose.Schema(
   }
 );
 
+// 1. Text index for search
+taskSchema.index({
+  title: "text",
+  description: "text"
+});
+
+// 2. index for filtering
+taskSchema.index({ user: 1 });
+
 module.exports = mongoose.model("Task", taskSchema);

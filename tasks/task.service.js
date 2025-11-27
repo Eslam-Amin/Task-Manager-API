@@ -2,13 +2,14 @@ const ApiError = require("../utils/ApiError");
 const {
   getStatusValue,
   getPriorityValue,
-  getNormalizedEnum
+  getNormalizedEnum,
+  TASK_STATUS_ENUM
 } = require("./task.enum");
 
 class TaskService {
   /**
    * Constructor for TaskService class
-   * 
+   *
    * Initializes the TaskService by loading the Task model.
    * Requires no parameters.
    */
@@ -18,10 +19,10 @@ class TaskService {
 
   /**
    * Create a New Task
-   * 
+   *
    * Creates a new task in the database with calculated priority and status values.
    * Priority and status values are used for efficient sorting.
-   * 
+   *
    * @param {Object} data - Task data
    * @param {string} data.title - Task title
    * @param {string} data.description - Task description
@@ -35,23 +36,22 @@ class TaskService {
     const task = new this.TaskModel({
       ...data,
       // Calculate priority value for sorting (0: low, 1: medium, 2: high)
-      priorityValue: TASK_PRIORITY_VALUE[data.priority.toUpperCase()],
+      priorityValue: getPriorityValue(data.priority),
       // Calculate status value for sorting (0: pending, 1: in-progress, 2: completed)
-      statusValue:
-        TASK_STATUS_VALUE[data.status.toUpperCase().replace("-", "_")]
+      statusValue: getStatusValue(TASK_STATUS_ENUM.PENDING)
     });
     return await task.save();
   }
 
   /**
    * Get Tasks with Filtering, Pagination, and Sorting
-   * 
+   *
    * Retrieves tasks for a specific user with support for:
    * - Filtering by status and priority
    * - Full-text search in title and description
    * - Sorting by priority or status (ascending/descending)
    * - Pagination
-   * 
+   *
    * @param {Object} reqQuery - Query parameters from request
    * @param {number} [reqQuery.page=1] - Page number
    * @param {number} [reqQuery.limit=10] - Items per page

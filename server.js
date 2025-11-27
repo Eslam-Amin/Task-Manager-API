@@ -15,6 +15,7 @@ const NODE_ENV = config.NODE_ENV || 5050;
 require("./startup/logging")(app);
 require("./startup/app")(app);
 require("./startup/db")();
+require("./startup/routes")(app);
 
 // Server
 const server = app.listen(PORT, (_) => {

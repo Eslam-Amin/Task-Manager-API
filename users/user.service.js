@@ -5,17 +5,17 @@ class UserService {
     this.UserModel = require("./user.model");
   }
 
-  async createUser(data) {
+  async createOne(data) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const user = new this.UserModel({ ...data, password: hashedPassword });
     return await user.save();
   }
 
-  async getAllUsers() {
+  async getAll() {
     return await this.UserModel.find();
   }
 
-  async getUserById(id) {
+  async getOneById(id) {
     const user = await this.UserModel.findById(id);
     if (!user) {
       throw ApiError.notFound(`User is not found`);
@@ -23,7 +23,7 @@ class UserService {
     return user;
   }
 
-  async getUserByEmail(email) {
+  async getOneByEmail(email) {
     const user = await this.UserModel.findOne({ email }).collation({
       locale: "en",
       strength: 2
@@ -34,7 +34,7 @@ class UserService {
     return user;
   }
 
-  async updateUser(id, data) {
+  async updateOne(id, data) {
     const user = await this.UserModel.findByIdAndUpdate(id, data, {
       new: true
     });
@@ -44,7 +44,7 @@ class UserService {
     return user;
   }
 
-  async deleteUser(id) {
+  async deleteOne(id) {
     const user = await this.UserModel.findByIdAndUpdate(id);
     if (!user) {
       throw ApiError.notFound(`User is not found`);

@@ -162,6 +162,7 @@ class ErrorHandler {
     // Create a copy of the error for processing
     let error = { ...err };
     error.message = err.message;
+    error.stack = err.stack;
 
     // Transform specific error types
     switch (err.name) {

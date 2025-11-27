@@ -30,18 +30,6 @@ class UserController {
     }
   }
 
-  async getUserByEmail(req, res, next) {
-    try {
-      const user = await this.userService.getOneByEmail(email);
-      res.status(200).json({
-        success: true,
-        data: user
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async updateUser(req, res, next) {
     try {
       const updatedUser = await this.userService.updateOne(

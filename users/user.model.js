@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const uuid = require("uuid");
 const config = require("../config");
 const { GENDER_LIST } = require("../utils/constants");
+const Hash = require("../utils/hash");
 
 const userSchema = mongoose.Schema(
   {
@@ -100,7 +101,7 @@ userSchema.methods.generateToken = async function () {
       expiresIn: config.JWT_EXPIRATION
     }
   );
-  this.sessionTokenId = sessionTokenId;
+  this.sessionTokenId = await Hash.hashKey(sessionTokenId);
   await this.save();
   return token;
 };

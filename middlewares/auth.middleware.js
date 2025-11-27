@@ -9,7 +9,7 @@ class Authentication {
   }
 
   // === Check user authentication and authorization ===
-  async _checkUser(decoded, next) {
+  async #checkUser(decoded, next) {
     const currentUser = await this.service.getOneById(decoded.userId);
 
     if (!currentUser)
@@ -62,7 +62,7 @@ class Authentication {
         ApiError.unauthorized("Token has expired, please login again...")
       );
 
-    const currentUser = await this._checkUser(decoded, next);
+    const currentUser = await this.#checkUser(decoded, next);
 
     req.userId = decoded.userId;
     req.user = currentUser;

@@ -18,7 +18,7 @@ module.exports = (app) => {
 
   // Not Found Route
   app.all("*", (req, res, next) => {
-    next(new ApiError(`This Route (${req.originalUrl}) is not found`, 400));
+    next(ApiError.notFound(`This Route (${req.originalUrl}) is not found`));
   });
 
   // Global Error Handler

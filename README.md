@@ -271,8 +271,8 @@ Reusable utility functions and classes.
 ### Step 1: Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd task-manager
+git clone https://github.com/Eslam-Amin/Task-Manager-API.git
+cd task-manager-api
 ```
 
 ### Step 2: Install Dependencies

@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const uuid = require("uuid");
 const config = require("../config");
 const { GENDER_LIST } = require("../utils/constants");
+const Hash = require("../utils/hash");
 
 const userSchema = mongoose.Schema(
   {
@@ -88,11 +89,7 @@ userSchema.virtual("age").get(function () {
 
 userSchema.methods.generateToken = async function () {
   const sessionTokenId = uuid.v4();
-  const tokenExpDate = new Date(); // Get the current date
-  tokenExpDate.setDate(
-    tokenExpDate.getDate() +
-      parseInt(config.JWT_EXPIRATION.toString().slice(0, -1))
-  );
+
   const token = jwt.sign(
     { userId: this._id, sessionTokenId },
     config.JWT_SECRET,
@@ -100,7 +97,7 @@ userSchema.methods.generateToken = async function () {
       expiresIn: config.JWT_EXPIRATION
     }
   );
-  this.sessionTokenId = sessionTokenId;
+  this.sessionTokenId = await Hash.hashKey(sessionTokenId);
   await this.save();
   return token;
 };

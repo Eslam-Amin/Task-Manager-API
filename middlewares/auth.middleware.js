@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const ApiError = require("../utils/ApiError");
+const Hash = require("../utils/hash.js");
+const config = require("../config");
 
 class Authentication {
   constructor() {
@@ -8,7 +10,7 @@ class Authentication {
   }
 
   // === Check user authentication and authorization ===
-  async _checkUser(decoded, next) {
+  async #checkUser(decoded, next) {
     const currentUser = await this.service.getOneById(decoded.userId);
 
     if (!currentUser)
@@ -16,7 +18,12 @@ class Authentication {
         ApiError.unauthorized("Invalid token, please login again...")
       );
 
-    if (decoded.sessionTokenId !== currentUser.sessionTokenId)
+    const isValidSessionTokenId = await Hash.compareKeys(
+      decoded.sessionTokenId,
+      currentUser.sessionTokenId
+    );
+
+    if (!isValidSessionTokenId)
       return next(
         ApiError.unauthorized("Session expired, please login again...", 401)
       );
@@ -40,15 +47,14 @@ class Authentication {
 
   // === Protect middleware ===
   protect = asyncHandler(async (req, res, next) => {
-    let token;
-    if (req.headers.authorization) token = req.headers.authorization;
+    let token = req.headers.authorization;
 
     if (!token)
       return next(
         ApiError.unauthorized("You are not logged in, please login...")
       );
 
-    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = await jwt.verify(token, config.JWT_SECRET);
 
     const currentTimestamp = Math.floor(Date.now() / 1000);
     if (decoded.exp < currentTimestamp)
@@ -56,7 +62,7 @@ class Authentication {
         ApiError.unauthorized("Token has expired, please login again...")
       );
 
-    const currentUser = await this._checkUser(decoded, next);
+    const currentUser = await this.#checkUser(decoded, next);
 
     req.userId = decoded.userId;
     req.user = currentUser;

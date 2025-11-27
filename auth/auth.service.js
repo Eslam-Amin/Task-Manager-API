@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const ApiError = require("../utils/ApiError");
+const Hash = require("../utils/hash");
 
 class AuthSerivce {
   constructor() {
@@ -16,7 +17,7 @@ class AuthSerivce {
     if (!user) {
       throw ApiError.unauthorized(`Incorrect email or password`);
     }
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await Hash.compareKeys(password, user.password);
     if (!isValidPassword) {
       throw ApiError.unauthorized(`Incorrect email or password`);
     }

@@ -18,8 +18,10 @@ A comprehensive RESTful API for managing tasks and users with authentication, bu
 - [Authentication](#authentication)
 - [Error Handling](#error-handling)
 - [Logging](#logging)
+- [Testing](#testing)
+- [Future Enhancements](#future-enhancements)
 
-## 🎯 Project Description
+## <a id="project-description"></a>🎯 Project Description
 
 Task Manager API is a production-ready Node.js backend application that provides a complete solution for task management. The API supports user registration and authentication, task creation and management, with advanced features like pagination, filtering, sorting, and full-text search. It follows RESTful principles and implements best practices for security, error handling, and code organization.
 
@@ -35,7 +37,7 @@ Task Manager API is a production-ready Node.js backend application that provides
 - **Logging**: Winston-based logging system with MongoDB integration
 - **API Documentation**: Swagger/OpenAPI documentation
 
-## ✨ Features
+## <a id="features"></a>✨ Features
 
 ### Authentication & Authorization
 
@@ -63,7 +65,7 @@ Task Manager API is a production-ready Node.js backend application that provides
 - Update user information
 - Delete users
 
-## 🛠 Technologies Used
+## <a id="technologies-used"></a>🛠 Technologies Used
 
 ### Core Technologies
 
@@ -104,7 +106,7 @@ Task Manager API is a production-ready Node.js backend application that provides
 
 - **nodemon** - Development server with auto-reload
 
-## 📁 Project Structure
+## <a id="project-structure"></a>📁 Project Structure
 
 ```
 task-manager/
@@ -159,7 +161,7 @@ task-manager/
 └── README.md               # Project documentation
 ```
 
-## 📦 Modules Overview
+## <a id="modules-overview"></a>📦 Modules Overview
 
 ### 1. Authentication Module (`/auth`)
 
@@ -260,7 +262,7 @@ Reusable utility functions and classes.
 - `joiErrorHandler.js` - Joi validation error formatter
 - `logger.js` - Winston logger configuration
 
-## 🚀 Installation
+## <a id="installation"></a>🚀 Installation
 
 ### Prerequisites
 
@@ -271,8 +273,8 @@ Reusable utility functions and classes.
 ### Step 1: Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd task-manager
+git clone https://github.com/Eslam-Amin/Task-Manager-API.git
+cd task-manager-api
 ```
 
 ### Step 2: Install Dependencies
@@ -341,7 +343,7 @@ This will create:
 
 **Note:** The seed script will connect to your MongoDB database and populate it with test data. If you want to clear existing data before seeding, uncomment the clearing code in `seed.js`.
 
-## ⚙️ Configuration
+## <a id="configuration"></a>⚙️ Configuration
 
 The application configuration is managed through environment variables and the `config/index.js` file. Key configuration areas:
 
@@ -350,7 +352,7 @@ The application configuration is managed through environment variables and the `
 - **Logging**: Log database connection
 - **Server**: Port and environment settings
 
-## 🏃 Running the Application
+## <a id="running-the-application"></a>🏃 Running the Application
 
 ### Development Mode
 
@@ -384,7 +386,7 @@ Database Connected: 127.0.0.1:27017
 Running on port 5050
 ```
 
-## 📚 API Documentation
+## <a id="api-documentation"></a>📚 API Documentation
 
 ### Swagger UI
 
@@ -417,7 +419,7 @@ The API documentation is available through Swagger UI. Once the server is runnin
 - Query parameter descriptions
 - Error response documentation
 
-## 🔌 API Endpoints
+## <a id="api-endpoints"></a>🔌 API Endpoints
 
 ### Authentication Endpoints
 
@@ -549,21 +551,21 @@ DELETE /api/v1/users/:id
 Authorization: <JWT_TOKEN>
 ```
 
-## 📮 Postman Collection
+## <a id="postman-collection"></a>📮 Postman Collection
 
 You can import the API endpoints into Postman for easier testing.
 
-**Postman Collection Link:** [Insert your Postman collection link here]
+**Postman Collection:** [View Documentation](https://documenter.getpostman.com/view/23525113/2sB3dLSrAs)
 
 To use the Postman collection:
 
 1. Import the collection into Postman
 2. Set up environment variables:
-   - `base_url`: `http://localhost:5050/api/v1`
-   - `token`: Your JWT token (obtained from login)
+   - `BASE_URL`: `http://localhost:5050/api/v1`
+   - `TOKEN`: Your JWT token (obtained from login)
 3. Start testing the endpoints
 
-## 🔐 Authentication
+## <a id="authentication"></a>🔐 Authentication
 
 The API uses JWT (JSON Web Tokens) for authentication. Here's how it works:
 
@@ -591,7 +593,7 @@ Authorization: <JWT_TOKEN>
 
 All routes except `/auth/register` and `/auth/login` require authentication.
 
-## ⚠️ Error Handling
+## <a id="error-handling"></a>⚠️ Error Handling
 
 The API uses a centralized error handling system:
 
@@ -623,7 +625,7 @@ The API uses a centralized error handling system:
 - Duplicate field errors
 - JWT errors
 
-## 📝 Logging
+## <a id="logging"></a>📝 Logging
 
 The application uses Winston for logging:
 
@@ -644,7 +646,7 @@ The application uses Winston for logging:
 - API requests (via Morgan)
 - Errors and exceptions
 
-## 🧪 Testing
+## <a id="testing"></a>🧪 Testing
 
 ### Manual Testing
 
@@ -658,6 +660,37 @@ Use the Swagger UI or Postman collection to test endpoints.
 4. Retrieve tasks with filters
 5. Update a task
 6. Delete a task
+
+## <a id="future-enhancements"></a>🚀 Future Enhancements
+
+The following features are planned for future releases:
+
+### User Verification
+
+- **Email/Phone Verification**: Implement a complete verification system for user accounts
+  - Send verification codes via email or SMS
+  - Verify user email addresses and phone numbers
+  - Require verification before allowing certain actions
+  - Resend verification codes with proper validation
+
+### Rate Limiting
+
+- **Verification Code Endpoint Protection**: Add rate limiting to prevent abuse
+  - Limit the number of verification code requests per user/IP
+  - Implement exponential backoff for repeated requests
+  - Add CAPTCHA for suspicious activity
+  - Track and prevent verification code spam
+
+### Additional Planned Features
+
+- Password reset functionality with secure token generation
+- Two-factor authentication (2FA) support
+- User activity logging and audit trails
+- Advanced task collaboration features
+- Real-time notifications
+- Task templates and recurring tasks
+- File attachments for tasks
+- Task comments and discussions
 
 ## 📄 License
 

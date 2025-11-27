@@ -4,7 +4,7 @@ const taskService = require("./task.service");
 class TaskController {
   async getAllTasks(req, res, next) {
     try {
-      const filter = { user: req.user._id };
+      const filter = { user: req.userId };
       const tasks = await taskService.getTasks(filter);
       res
         .status(200)
@@ -23,7 +23,7 @@ class TaskController {
    */
   async createTask(req, res, next) {
     try {
-      const taskData = { ...req.body, user: req.user._id };
+      const taskData = { ...req.body, user: req.userId };
       const newTask = await taskService.createTask(taskData);
       res.status(201).json({
         message: "Task created successfully",
@@ -44,7 +44,7 @@ class TaskController {
   async getTask(req, res, next) {
     try {
       const taskId = req.params.id;
-      const task = await taskService.getTaskById(taskId, req.user._id);
+      const task = await taskService.getTaskById(taskId, req.userId);
       res
         .status(200)
         .json({ message: "Task updated successfully", data: task });
@@ -66,7 +66,7 @@ class TaskController {
       const updateData = req.body;
       const updatedTask = await taskService.updateTask(
         taskId,
-        req.user._id,
+        req.userId,
         updateData
       );
       res
@@ -87,8 +87,8 @@ class TaskController {
   async deleteTask(req, res, next) {
     try {
       const taskId = req.params.id;
-      await taskService.deleteTask(taskId, req.user._id);
-      res.status(200).json({ message: "Task deleted successfully" });
+      await taskService.deleteTask(taskId, req.userId);
+      res.status(200).json({ message: "Task deleted successfully", data: {} });
     } catch (error) {
       next(error);
     }

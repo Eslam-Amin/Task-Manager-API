@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const { TASK_STATUS, TASK_PRIORITY } = require("../utils/constants");
+const { TASK_STATUS_ENUM, TASK_PRIORITY_ENUM } = require("./task.enum.js");
+const TaskDTO = require("./task.dto");
 
 const taskSchema = mongoose.Schema(
   {
@@ -17,14 +18,15 @@ const taskSchema = mongoose.Schema(
       type: String,
       trim: true,
       lowercase: true,
-      enum: TASK_STATUS,
+      enum: TASK_STATUS_ENUM,
+      default: TASK_STATUS_ENUM.PENDING,
       required: [true, "task status is required"]
     },
     priority: {
       type: String,
       trim: true,
       lowercase: true,
-      enum: TASK_PRIORITY,
+      enum: TASK_PRIORITY_ENUM,
       required: [true, "task priority is required"]
     },
     dueDate: {

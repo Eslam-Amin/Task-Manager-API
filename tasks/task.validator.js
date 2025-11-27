@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const asyncHandler = require("express-async-handler");
 const joiErrorHandler = require("../utils/joiErrorHandler");
 const { TASK_STATUS, TASK_PRIORITY } = require("../utils/constants");
 
@@ -8,12 +7,10 @@ class TaskValidator {
     const schema = Joi.object({
       title: Joi.string().required().min(3).max(100),
       description: Joi.string().optional().allow("").max(500),
-      dueDate: Joi.date().min("now").required(),
+      dueDate: Joi.date().iso().min("now").required(),
       priority: Joi.string()
+        .lowercase()
         .valid(...TASK_PRIORITY)
-        .required(),
-      status: Joi.string()
-        .valid(...TASK_STATUS)
         .required()
     });
     joiErrorHandler.validate(schema, req.body);
@@ -24,13 +21,15 @@ class TaskValidator {
     const schema = Joi.object({
       title: Joi.string().optional().min(3).max(100),
       description: Joi.string().optional().allow("").max(500),
-      dueDate: Joi.date().min("now").required(),
+      dueDate: Joi.date().iso().min("now").optional(),
       priority: Joi.string()
+        .lowercase()
         .valid(...TASK_PRIORITY)
-        .required(),
+        .optional(),
       status: Joi.string()
+        .lowercase()
         .valid(...TASK_STATUS)
-        .required()
+        .optional()
     });
     joiErrorHandler.validate(schema, req.body);
     next();

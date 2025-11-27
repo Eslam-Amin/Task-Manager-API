@@ -16,12 +16,14 @@ const taskSchema = mongoose.Schema(
     status: {
       type: String,
       trim: true,
+      lowercase: true,
       enum: TASK_STATUS,
       required: [true, "task status is required"]
     },
     priority: {
       type: String,
       trim: true,
+      lowercase: true,
       enum: TASK_PRIORITY,
       required: [true, "task priority is required"]
     },

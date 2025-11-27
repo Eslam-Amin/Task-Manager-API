@@ -38,9 +38,15 @@ const taskSchema = mongoose.Schema(
       required: [true, "task must belong to a user"]
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform(doc, ret) {
+        return TaskDTO.toTaskDTO(ret);
+      }
+    }
+  }
 );
-
-taskSchema.set("toJSON", { virtuals: true });
 
 module.exports = mongoose.model("Task", taskSchema);

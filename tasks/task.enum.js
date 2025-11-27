@@ -33,6 +33,7 @@ exports.TASK_PRIORITY_VALUE = createValueMapping(exports.TASK_PRIORITY, (val) =>
 );
 exports.TASK_STATUS_VALUE = createValueMapping(exports.TASK_STATUS);
 
+// Helper functions
 exports.getStatusValue = (status) => {
   return exports.TASK_STATUS_VALUE[normalizeEnumKey(status)] ?? null;
 };

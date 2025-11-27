@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const ApiError = require("../utils/ApiError");
 const Hash = require("../utils/hash.js");
+const config = require("../config");
 
 class Authentication {
   constructor() {
@@ -46,15 +47,14 @@ class Authentication {
 
   // === Protect middleware ===
   protect = asyncHandler(async (req, res, next) => {
-    let token;
-    if (req.headers.authorization) token = req.headers.authorization;
+    let token = req.headers.authorization;
 
     if (!token)
       return next(
         ApiError.unauthorized("You are not logged in, please login...")
       );
 
-    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = await jwt.verify(token, config.JWT_SECRET);
 
     const currentTimestamp = Math.floor(Date.now() / 1000);
     if (decoded.exp < currentTimestamp)

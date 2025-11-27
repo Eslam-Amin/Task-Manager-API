@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
-
+const jwt = require("jsonwebtoken");
+const uuid = require("uuid");
+const config = require("../config");
 const { GENDER_LIST } = require("../utils/constants");
 
 const userSchema = mongoose.Schema(
@@ -49,6 +51,7 @@ const userSchema = mongoose.Schema(
     verificationCodeExp: Date,
     verificationCodeVerified: Boolean,
     deactivatedAt: Date,
+    sessionTokenId: String,
     verified: {
       type: Boolean,
       default: false
@@ -82,5 +85,24 @@ userSchema.virtual("age").get(function () {
   }
   return age;
 });
+
+userSchema.methods.generateToken = async function () {
+  const sessionTokenId = uuid.v4();
+  const tokenExpDate = new Date(); // Get the current date
+  tokenExpDate.setDate(
+    tokenExpDate.getDate() +
+      parseInt(config.JWT_EXPIRATION.toString().slice(0, -1))
+  );
+  const token = jwt.sign(
+    { userId: this._id, sessionTokenId },
+    config.JWT_SECRET,
+    {
+      expiresIn: config.JWT_EXPIRATION
+    }
+  );
+  this.sessionTokenId = sessionTokenId;
+  await this.save();
+  return token;
+};
 
 module.exports = mongoose.model("User", userSchema);

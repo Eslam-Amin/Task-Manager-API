@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
-const { TASK_STATUS, TASK_PRIORITY } = require("../utils/constants");
+const {
+  TASK_STATUS_ENUM,
+  TASK_PRIORITY_ENUM,
+  TASK_PRIORITY,
+  TASK_STATUS
+} = require("./task.enum.js");
+const TaskDTO = require("./task.dto");
 
 const taskSchema = mongoose.Schema(
   {
@@ -16,14 +22,28 @@ const taskSchema = mongoose.Schema(
     status: {
       type: String,
       trim: true,
-      enum: TASK_STATUS,
+      lowercase: true,
+      enum: TASK_STATUS_ENUM,
+      default: TASK_STATUS_ENUM.PENDING,
       required: [true, "task status is required"]
     },
     priority: {
       type: String,
       trim: true,
-      enum: TASK_PRIORITY,
+      lowercase: true,
+      enum: TASK_PRIORITY_ENUM,
       required: [true, "task priority is required"]
+    },
+    priorityValue: {
+      type: Number,
+      enum: TASK_PRIORITY.map((_, index) => index), // 0: low, 1: medium, 2: high, etc
+      required: [true, "task priority value is required"]
+    },
+    statusValue: {
+      type: Number,
+      enum: TASK_STATUS.map((_, index) => index), // 0: pending, 1: in-progress, 2: completed, etc
+      default: TASK_STATUS_ENUM.PENDING,
+      required: [true, "task status value is required"]
     },
     dueDate: {
       type: Date
@@ -34,9 +54,32 @@ const taskSchema = mongoose.Schema(
       required: [true, "task must belong to a user"]
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform(doc, ret) {
+        return TaskDTO.toTaskDTO(ret);
+      }
+    }
+  }
 );
 
-taskSchema.set("toJSON", { virtuals: true });
+// 1. Text index for search
+taskSchema.index(
+  {
+    title: "text",
+    description: "text"
+  },
+  {
+    weights: {
+      title: 3,
+      description: 1
+    }
+  }
+);
+
+// 2. index for filtering
+taskSchema.index({ user: 1 });
 
 module.exports = mongoose.model("Task", taskSchema);

@@ -22,7 +22,7 @@ router
 router
   .route("/:id")
   .get(taskController.getTask)
-  .patch(taskValidator.updateTask, taskController.createTask)
-  .delete(taskController.createTask);
+  .patch(taskValidator.updateTask, taskController.updateTask)
+  .delete(taskController.deleteTask);
 
 module.exports = router;

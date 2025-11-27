@@ -4,7 +4,7 @@ const sendErrorForDev = (err, res) => {
   console.log("🚀 ~ sendErrorForDev ~ err:", err);
   res.status(err.statusCode).json({
     success: err.success || false,
-    msg: err.message || "Something went wrong",
+    message: err.message || "Something went wrong",
     stack: err.stack
   });
 };
@@ -13,13 +13,13 @@ const sendErrorForProd = (err, res) => {
   if (!err.isOperational) {
     res.status(err.statusCode).json({
       success: false,
-      msg: "Something went wrong"
+      message: "Something went wrong"
     });
   } else {
     // For other status codes
     res.status(err.statusCode).json({
       success: err.success || false,
-      msg: err.message
+      message: err.message
     });
   }
 };

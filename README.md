@@ -19,7 +19,7 @@ A comprehensive RESTful API for managing tasks and users with authentication, bu
 - [Error Handling](#error-handling)
 - [Logging](#logging)
 
-## 🎯 Project Description
+## <a id="project-description"></a>🎯 Project Description
 
 Task Manager API is a production-ready Node.js backend application that provides a complete solution for task management. The API supports user registration and authentication, task creation and management, with advanced features like pagination, filtering, sorting, and full-text search. It follows RESTful principles and implements best practices for security, error handling, and code organization.
 
@@ -35,7 +35,7 @@ Task Manager API is a production-ready Node.js backend application that provides
 - **Logging**: Winston-based logging system with MongoDB integration
 - **API Documentation**: Swagger/OpenAPI documentation
 
-## ✨ Features
+## <a id="features"></a>✨ Features
 
 ### Authentication & Authorization
 
@@ -63,7 +63,7 @@ Task Manager API is a production-ready Node.js backend application that provides
 - Update user information
 - Delete users
 
-## 🛠 Technologies Used
+## <a id="technologies-used"></a>🛠 Technologies Used
 
 ### Core Technologies
 
@@ -104,7 +104,7 @@ Task Manager API is a production-ready Node.js backend application that provides
 
 - **nodemon** - Development server with auto-reload
 
-## 📁 Project Structure
+## <a id="project-structure"></a>📁 Project Structure
 
 ```
 task-manager/
@@ -159,7 +159,7 @@ task-manager/
 └── README.md               # Project documentation
 ```
 
-## 📦 Modules Overview
+## <a id="modules-overview"></a>📦 Modules Overview
 
 ### 1. Authentication Module (`/auth`)
 
@@ -260,7 +260,7 @@ Reusable utility functions and classes.
 - `joiErrorHandler.js` - Joi validation error formatter
 - `logger.js` - Winston logger configuration
 
-## 🚀 Installation
+## <a id="installation"></a>🚀 Installation
 
 ### Prerequisites
 
@@ -341,7 +341,7 @@ This will create:
 
 **Note:** The seed script will connect to your MongoDB database and populate it with test data. If you want to clear existing data before seeding, uncomment the clearing code in `seed.js`.
 
-## ⚙️ Configuration
+## <a id="configuration"></a>⚙️ Configuration
 
 The application configuration is managed through environment variables and the `config/index.js` file. Key configuration areas:
 
@@ -350,7 +350,7 @@ The application configuration is managed through environment variables and the `
 - **Logging**: Log database connection
 - **Server**: Port and environment settings
 
-## 🏃 Running the Application
+## <a id="running-the-application"></a>🏃 Running the Application
 
 ### Development Mode
 
@@ -384,7 +384,7 @@ Database Connected: 127.0.0.1:27017
 Running on port 5050
 ```
 
-## 📚 API Documentation
+## <a id="api-documentation"></a>📚 API Documentation
 
 ### Swagger UI
 
@@ -417,7 +417,7 @@ The API documentation is available through Swagger UI. Once the server is runnin
 - Query parameter descriptions
 - Error response documentation
 
-## 🔌 API Endpoints
+## <a id="api-endpoints"></a>🔌 API Endpoints
 
 ### Authentication Endpoints
 
@@ -549,7 +549,7 @@ DELETE /api/v1/users/:id
 Authorization: <JWT_TOKEN>
 ```
 
-## 📮 Postman Collection
+## <a id="postman-collection"></a>📮 Postman Collection
 
 You can import the API endpoints into Postman for easier testing.
 
@@ -563,7 +563,7 @@ To use the Postman collection:
    - `token`: Your JWT token (obtained from login)
 3. Start testing the endpoints
 
-## 🔐 Authentication
+## <a id="authentication"></a>🔐 Authentication
 
 The API uses JWT (JSON Web Tokens) for authentication. Here's how it works:
 
@@ -591,7 +591,7 @@ Authorization: <JWT_TOKEN>
 
 All routes except `/auth/register` and `/auth/login` require authentication.
 
-## ⚠️ Error Handling
+## <a id="error-handling"></a>⚠️ Error Handling
 
 The API uses a centralized error handling system:
 
@@ -623,7 +623,7 @@ The API uses a centralized error handling system:
 - Duplicate field errors
 - JWT errors
 
-## 📝 Logging
+## <a id="logging"></a>📝 Logging
 
 The application uses Winston for logging:
 

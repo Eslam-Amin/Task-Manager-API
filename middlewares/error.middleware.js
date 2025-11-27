@@ -54,17 +54,28 @@ const handleJwtExpired = (_) =>
 const globalError = (err, req, res, next) => {
   err.success = err.success || false;
   err.statusCode = err.statusCode || 500;
+  let error = { ...err };
+  error.message = err.message;
+  switch (err.name) {
+    case "JsonWebTokenError":
+      error = handleInvalidJwtSignature();
+      break;
+    case "TokenExpiredError":
+      error = handleJwtExpired();
+      break;
+    case 11000:
+      error = handleDuplicatedFieldsDB(err);
+      break;
+    case "CastError":
+      error = handleCastErrorDB(err);
+      break;
+    case "ValidationError":
+      error = handleValidationError(err);
+      break;
+  }
   if (config.NODE_ENV === "development") {
-    sendErrorForDev(err, res);
+    sendErrorForDev(error, res);
   } else {
-    let error = { ...err };
-    error.message = err.message;
-    if (err.name === "JsonWebTokenError") error = handleInvalidJwtSignature();
-    if (err.name === "TokenExpiredError") error = handleJwtExpired();
-    if (err.code === 11000) error = handleDuplicatedFieldsDB(err);
-    if (err.name === "CastError") error = handleCastErrorDB(err);
-    if (err.name === "ValidationError") error = handleValidationError(err);
-
     sendErrorForProd(error, res);
   }
 };

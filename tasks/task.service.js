@@ -36,8 +36,35 @@ class TaskService {
    * @param {Object} [filter] - Filter to apply to the tasks
    * @returns {Promise<Task[]>} - All tasks that match the filter
    */
-  async getTasks(filter = {}) {
-    return await this.TaskModel.find(filter);
+  async getTasks(reqQuery = {}, userId) {
+    const page = parseInt(reqQuery.page) || 1;
+    const limit = parseInt(reqQuery.limit) || 10;
+    const skip = (page - 1) * limit;
+    let filter = { user: userId };
+    let sortOption = { createdAt: -1 };
+    if (reqQuery.status) {
+      filter.status =
+        TASK_STATUS_ENUM[reqQuery.status.toUpperCase().replace("-", "_")];
+    }
+    if (reqQuery.priority) {
+      filter.priority = TASK_PRIORITY_ENUM[reqQuery.priority.toUpperCase()];
+    }
+    if (reqQuery.search) {
+      filter["$text"] = { $search: reqQuery.search.trim() };
+    }
+    if (reqQuery.sort) {
+      sortOption = {
+        [`${reqQuery.sort.toLowerCase()}Value`]:
+          reqQuery?.order?.toLowerCase() === "asc" ? 1 : -1
+      };
+    }
+
+    const tasks = await this.TaskModel.find(filter)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit);
+    const totalTasks = await this.TaskModel.countDocuments(filter);
+    return { tasks, totalTasks, page, limit };
   }
 
   /**

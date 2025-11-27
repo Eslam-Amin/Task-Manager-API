@@ -1,9 +1,8 @@
 const ApiError = require("../utils/ApiError");
 const {
-  TASK_STATUS_ENUM,
-  TASK_PRIORITY_ENUM,
-  TASK_PRIORITY_VALUE,
-  TASK_STATUS_VALUE
+  getStatusValue,
+  getPriorityValue,
+  getNormalizedEnum
 } = require("./task.enum");
 
 class TaskService {
@@ -24,9 +23,8 @@ class TaskService {
   async createTask(data) {
     const task = new this.TaskModel({
       ...data,
-      priorityValue: TASK_PRIORITY_VALUE[data.priority.toUpperCase()],
-      statusValue:
-        TASK_STATUS_VALUE[data.status.toUpperCase().replace("-", "_")]
+      priorityValue: getPriorityValue(data.priority),
+      statusValue: getStatusValue("pending")
     });
     return await task.save();
   }
@@ -43,11 +41,10 @@ class TaskService {
     let filter = { user: userId };
     let sortOption = { createdAt: -1 };
     if (reqQuery.status) {
-      filter.status =
-        TASK_STATUS_ENUM[reqQuery.status.toUpperCase().replace("-", "_")];
+      filter.status = getNormalizedEnum(reqQuery.status, "status");
     }
     if (reqQuery.priority) {
-      filter.priority = TASK_PRIORITY_ENUM[reqQuery.priority.toUpperCase()];
+      filter.priority = getNormalizedEnum(reqQuery.priority, "priority");
     }
     if (reqQuery.search) {
       filter["$text"] = { $search: reqQuery.search.trim() };
@@ -94,11 +91,10 @@ class TaskService {
    */
   async updateTask(id, userId, data) {
     if (data.priority) {
-      data.priorityValue = TASK_PRIORITY_VALUE[data.priority.toUpperCase()];
+      data.priorityValue = getPriorityValue(data.priority);
     }
     if (data.status) {
-      data.statusValue =
-        TASK_STATUS_VALUE[data.status.toUpperCase().replace("-", "_")];
+      data.statusValue = getStatusValue(data.status);
     }
     const task = await this.TaskModel.findByIdAndUpdate(id, data, {
       new: true

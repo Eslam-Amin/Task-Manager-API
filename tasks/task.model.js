@@ -3,7 +3,8 @@ const {
   TASK_STATUS_ENUM,
   TASK_PRIORITY_ENUM,
   TASK_PRIORITY,
-  TASK_STATUS
+  TASK_STATUS,
+  TASK_STATUS_VALUE
 } = require("./task.enum.js");
 const TaskDTO = require("./task.dto");
 
@@ -42,7 +43,7 @@ const taskSchema = mongoose.Schema(
     statusValue: {
       type: Number,
       enum: TASK_STATUS.map((_, index) => index), // 0: pending, 1: in-progress, 2: completed, etc
-      default: TASK_STATUS_ENUM.PENDING,
+      default: TASK_STATUS_VALUE.PENDING,
       required: [true, "task status value is required"]
     },
     dueDate: {

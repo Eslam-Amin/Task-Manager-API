@@ -16,5 +16,7 @@ module.exports = {
   APP_NAME: process.env.APP_NAME || "Task Manager",
 
   JWT_EXPIRATION: process.env.JWT_EXPIRATION,
-  JWT_SECRET: process.env.JWT_SECRET
+  JWT_SECRET: process.env.JWT_SECRET,
+
+  SALT_ROUNDS: process.env.SALT_ROUNDS
 };

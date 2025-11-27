@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const joiErrorHandler = require("../utils/joiErrorHandler");
-const { TASK_STATUS, TASK_PRIORITY } = require("../utils/constants");
+const { TASK_STATUS, TASK_PRIORITY } = require("./task.enum");
 
 class TaskValidator {
   createTask(req, _, next) {

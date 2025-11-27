@@ -1,4 +1,10 @@
 const ApiError = require("../utils/ApiError");
+const {
+  TASK_STATUS_ENUM,
+  TASK_PRIORITY_ENUM,
+  TASK_PRIORITY_VALUE,
+  TASK_STATUS_VALUE
+} = require("./task.enum");
 
 class TaskService {
   /**

@@ -36,9 +36,7 @@ class TaskService {
     const task = new this.TaskModel({
       ...data,
       // Calculate priority value for sorting (0: low, 1: medium, 2: high)
-      priorityValue: getPriorityValue(data.priority),
-      // Calculate status value for sorting (0: pending, 1: in-progress, 2: completed)
-      statusValue: getStatusValue(TASK_STATUS_ENUM.PENDING)
+      priorityValue: getPriorityValue(data.priority)
     });
     return await task.save();
   }
@@ -72,7 +70,7 @@ class TaskService {
     const limit = parseInt(reqQuery.limit) || 10;
     const skip = (page - 1) * limit;
     let filter = { user: userId };
-    let sortOption = { createdAt: -1 };
+    let sortOption = { dueDate: -1 };
     if (reqQuery.status) {
       filter.status = getNormalizedEnum(reqQuery.status, "status");
     }
@@ -83,10 +81,10 @@ class TaskService {
       filter["$text"] = { $search: reqQuery.search.trim() };
     }
     if (reqQuery.sort) {
-      sortOption = {
-        [`${reqQuery.sort.toLowerCase()}Value`]:
-          reqQuery?.order?.toLowerCase() === "asc" ? 1 : -1
-      };
+      const order = reqQuery.order?.toLowerCase() === "asc" ? 1 : -1;
+      if (reqQuery.sort.toLowerCase() === "duedate")
+        sortOption = { dueDate: order };
+      else sortOption = { [`${reqQuery.sort.toLowerCase()}Value`]: order };
     }
 
     const tasks = await this.TaskModel.find(filter)

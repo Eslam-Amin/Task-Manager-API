@@ -65,7 +65,7 @@ class TaskService {
    * @returns {number} page - Current page number
    * @returns {number} limit - Items per page
    */
-  async getTasks(reqQuery = {}, userId) {
+  async getTasks(userId, reqQuery = {}) {
     const page = parseInt(reqQuery.page) || 1;
     const limit = parseInt(reqQuery.limit) || 10;
     const skip = (page - 1) * limit;

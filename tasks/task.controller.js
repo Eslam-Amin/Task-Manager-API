@@ -34,8 +34,8 @@ class TaskController {
     try {
       // Get tasks with filters, pagination, and sorting
       const { tasks, totalTasks, page, limit } = await taskService.getTasks(
-        req.query,
-        req.userId
+        req.userId,
+        req.query
       );
 
       // Send response with tasks and pagination metadata

@@ -102,7 +102,13 @@ class UserService {
    * @returns {Promise<Object>} - Updated user object
    * @throws {ApiError} - If user is not found (404)
    */
-  async updateOne(id, data) {
+  async updateOne(id, data, userId) {
+    if (id !== userId) {
+      throw ApiError.forbidden(`You are not allowed to access this user`);
+    }
+    const hashedPassword = await Hash.hashKey(data.password);
+    data.password = hashedPassword;
+    data.passwordChangedAt = Date.now();
     // Update user and return updated document
     const user = await this.UserModel.findByIdAndUpdate(id, data, {
       new: true // Return updated document instead of original
@@ -124,7 +130,10 @@ class UserService {
    * @returns {Promise<Object>} - Deleted user object
    * @throws {ApiError} - If user is not found (404)
    */
-  async deleteOne(id) {
+  async deleteOne(id, userId) {
+    if (id !== userId) {
+      throw ApiError.forbidden(`You are not allowed to access this user`);
+    }
     const user = await this.UserModel.findByIdAndDelete(id);
 
     if (!user) {

@@ -34,6 +34,26 @@ class TaskValidator {
     joiErrorHandler.validate(schema, req.body);
     next();
   }
+
+  filterTasks(req, _, next) {
+    const schema = Joi.object({
+      page: Joi.number().optional().default(1),
+      limit: Joi.number().optional().default(10),
+      status: Joi.string()
+        .lowercase()
+        .optional()
+        .valid(...TASK_STATUS),
+      priority: Joi.string()
+        .lowercase()
+        .optional()
+        .valid(...TASK_PRIORITY),
+      search: Joi.string().optional(),
+      sort: Joi.string().optional().valid("priority", "status"),
+      order: Joi.string().optional().valid("asc", "desc")
+    });
+    joiErrorHandler.validate(schema, req.query);
+    next();
+  }
 }
 
 module.exports = new TaskValidator();

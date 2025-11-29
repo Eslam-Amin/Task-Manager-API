@@ -1,3 +1,6 @@
+// Task model schema with text search indexing and user ownership.
+// Uses numeric priorityValue and statusValue for efficient sorting.
+
 const mongoose = require("mongoose");
 const {
   TASK_STATUS_ENUM,
@@ -37,12 +40,12 @@ const taskSchema = mongoose.Schema(
     },
     priorityValue: {
       type: Number,
-      enum: TASK_PRIORITY.map((_, index) => index), // 0: low, 1: medium, 2: high, etc
+      enum: TASK_PRIORITY.map((_, index) => index), // 0: low, 1: medium, 2: high
       required: [true, "task priority value is required"]
     },
     statusValue: {
       type: Number,
-      enum: TASK_STATUS.map((_, index) => index), // 0: pending, 1: in-progress, 2: completed, etc
+      enum: TASK_STATUS.map((_, index) => index), // 0: pending, 1: in-progress, 2: completed
       default: TASK_STATUS_VALUE.PENDING,
       required: [true, "task status value is required"]
     },
@@ -66,7 +69,7 @@ const taskSchema = mongoose.Schema(
   }
 );
 
-// 1. Text index for search
+// Text index for full-text search (title weighted 3x more than description)
 taskSchema.index(
   {
     title: "text",
@@ -80,7 +83,7 @@ taskSchema.index(
   }
 );
 
-// 2. index for filtering
+// Index on user field for efficient filtering by owner
 taskSchema.index({ user: 1 });
 
 module.exports = mongoose.model("Task", taskSchema);

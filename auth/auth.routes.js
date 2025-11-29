@@ -1,15 +1,12 @@
 const express = require("express");
 
-// Controller
 const authController = require("./auth.controller");
-
-// Validator
 const authValidator = require("./auth.validator");
 const userValidator = require("../users/user.validator");
-// Router
+
 const router = express.Router();
 
-// Auth Routes
+// Registration uses user validator since it validates full user profile
 router
   .route("/register")
   .post(userValidator.createOne, authController.registerOne);

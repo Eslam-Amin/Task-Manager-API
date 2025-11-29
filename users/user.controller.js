@@ -1,11 +1,5 @@
-/**
- * User Controller
- *
- * This module handles HTTP requests related to user management.
- * It processes requests, calls the user service, and sends responses.
- *
- * @module users/user.controller
- */
+// User controller handles HTTP requests for user management operations.
+// Some routes are public, others require authentication.
 
 const userService = require("./user.service");
 
@@ -16,6 +10,8 @@ const userService = require("./user.service");
  * updating, and deleting users.
  */
 class UserController {
+  // Handles GET /api/v1/users
+  // Returns all users (public route)
   async getAllUsers(req, res, next) {
     try {
       const users = await userService.getAll();
@@ -28,9 +24,8 @@ class UserController {
     }
   }
 
-  // @desc    Get specific user
-  // @route   GET /api/v1/user/:id
-  // @access  Public
+  // Handles GET /api/v1/users/:id
+  // Returns specific user by ID (requires authentication)
   async getUserById(req, res, next) {
     try {
       const user = await userService.getOneById(req.params.id);
@@ -43,6 +38,8 @@ class UserController {
     }
   }
 
+  // Handles PATCH /api/v1/users/:id
+  // Updates user information (requires authentication)
   async updateUser(req, res, next) {
     try {
       const updatedUser = await userService.updateOne(req.params.id, req.body);
@@ -55,6 +52,8 @@ class UserController {
     }
   }
 
+  // Handles DELETE /api/v1/users/:id
+  // Deletes user (requires authentication)
   async deleteUser(req, res, next) {
     try {
       await userService.deleteOne(req.params.id);

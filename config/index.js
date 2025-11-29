@@ -1,66 +1,31 @@
-/**
- * Application Configuration
- * 
- * This module centralizes all application configuration by loading
- * environment variables from .env file and providing default values.
- * 
- * @module config
- */
+// Centralized application configuration loaded from environment variables.
+// Provides sensible defaults for development while requiring explicit values in production.
 
 require("dotenv").config();
 
-/**
- * Application Configuration Object
- * 
- * Contains all configuration values for the application.
- * Values are loaded from environment variables with fallback defaults.
- */
 module.exports = {
-  /**
-   * Database Configuration
-   */
   database: {
-    // MongoDB connection URI
     URI: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/task-manager-dev",
-    // Database password (if required)
-    PASWORD: process.env.DB_PASSWORD,
-    // Database username (if required)
+    PASSWORD: process.env.DB_PASSWORD,
     USERNAME: process.env.DB_USERNAME
   },
 
-  /**
-   * Logger Configuration
-   */
   logger: {
-    // MongoDB URI for logging (separate database for logs)
+    // Separate database for application logs in production
     DB_LOGGER:
       process.env.LOG_URI || "mongodb://127.0.0.1:27017/task-manager-logs-dev"
   },
 
-  /**
-   * Application Settings
-   */
-  // Node environment (development, production, test)
   NODE_ENV: process.env.NODE_ENV || "development",
-  
-  // Server port number
   PORT: process.env.PORT || 5050,
-  
-  // Application name
   APP_NAME: process.env.APP_NAME || "Task Manager",
 
-  /**
-   * JWT Configuration
-   */
-  // JWT token expiration time (e.g., "30d", "24h", "3600s")
+  // JWT token expiration format: "30d", "24h", "3600s"
   JWT_EXPIRATION: process.env.JWT_EXPIRATION,
-  
-  // Secret key for signing JWT tokens (MUST be set in production)
+
+  // Must be set in production for security
   JWT_SECRET: process.env.JWT_SECRET,
 
-  /**
-   * Security Configuration
-   */
-  // Number of salt rounds for bcrypt password hashing (default: 10)
+  // Bcrypt salt rounds (default: 10, higher = more secure but slower)
   SALT_ROUNDS: process.env.SALT_ROUNDS
 };

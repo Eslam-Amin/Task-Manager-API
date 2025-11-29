@@ -1,8 +1,12 @@
+// User validator validates user registration and update requests using Joi schemas.
+
 const Joi = require("joi");
 const joiErrorHandler = require("../utils/joiErrorHandler");
 const { GENDER_LIST } = require("../utils/constants");
 
 class UserValidator {
+  // Validates user registration: all fields required including phone pattern
+  // Phone must start with 01 and contain 11 digits (Egyptian format)
   createOne(req, _, next) {
     const schema = Joi.object({
       firstName: Joi.string().required(),
@@ -28,6 +32,7 @@ class UserValidator {
     next();
   }
 
+  // Validates user update: all fields optional, same constraints as create
   updateOne(req, _, next) {
     const schema = Joi.object({
       firstName: Joi.string().optional(),

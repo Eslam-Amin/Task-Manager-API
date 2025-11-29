@@ -11,7 +11,7 @@ router.use(protect);
 
 router
   .route("/")
-  .get(taskController.getAllTasks)
+  .get(taskValidator.filterTasks, taskController.getAllTasks)
   .post(taskValidator.createTask, taskController.createTask);
 
 router

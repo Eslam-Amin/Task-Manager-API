@@ -6,7 +6,9 @@ require("dotenv").config();
 module.exports = {
   database: {
     URI: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/task-manager-dev",
+    // Database password (if required)
     PASSWORD: process.env.DB_PASSWORD,
+    // Database username (if required)
     USERNAME: process.env.DB_USERNAME
   },
 

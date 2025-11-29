@@ -1,11 +1,5 @@
-/**
- * Task Controller
- *
- * This module handles HTTP requests related to task management.
- * It processes requests, calls the task service, and sends responses.
- *
- * @module tasks/task.controller
- */
+// Task controller handles HTTP requests for task CRUD operations.
+// All routes require authentication and enforce user ownership of tasks.
 
 const taskService = require("./task.service");
 
@@ -16,20 +10,8 @@ const taskService = require("./task.service");
  * updating, and deleting tasks.
  */
 class TaskController {
-  /**
-   * Get All Tasks Handler
-   *
-   * Handles GET /api/v1/tasks requests.
-   * Retrieves tasks for the authenticated user with pagination, filtering, and sorting.
-   *
-   * @param {Express.Request} req - Express request object
-   * @param {Object} req.query - Query parameters (page, limit, status, priority, search, sort, order)
-   * @param {string} req.userId - User ID from authentication middleware
-   * @param {Express.Response} res - Express response object
-   * @param {Function} next - Express next middleware function
-   *
-   * @returns {void} - Sends JSON response with tasks and pagination info
-   */
+  // Handles GET /api/v1/tasks
+  // Returns paginated, filtered, and sorted tasks for authenticated user
   async getAllTasks(req, res, next) {
     try {
       // Get tasks with filters, pagination, and sorting
@@ -54,24 +36,8 @@ class TaskController {
     }
   }
 
-  /**
-   * Create Task Handler
-   *
-   * Handles POST /api/v1/tasks requests.
-   * Creates a new task for the authenticated user.
-   *
-   * @param {Express.Request} req - Express request object
-   * @param {Object} req.body - Task data to create
-   * @param {string} req.body.title - Task title
-   * @param {string} req.body.description - Task description
-   * @param {string} req.body.priority - Task priority (low, medium, high)
-   * @param {Date} req.body.dueDate - Task due date
-   * @param {string} req.userId - User ID from authentication middleware
-   * @param {Express.Response} res - Express response object
-   * @param {Function} next - Express next middleware function
-   *
-   * @returns {void} - Sends JSON response with created task
-   */
+  // Handles POST /api/v1/tasks
+  // Creates new task for authenticated user
   async createTask(req, res, next) {
     try {
       // Combine request body with authenticated user ID
@@ -90,20 +56,8 @@ class TaskController {
     }
   }
 
-  /**
-   * Get Task by ID Handler
-   *
-   * Handles GET /api/v1/tasks/:id requests.
-   * Retrieves a specific task by ID, ensuring it belongs to the authenticated user.
-   *
-   * @param {Express.Request} req - Express request object
-   * @param {string} req.params.id - Task ID
-   * @param {string} req.userId - User ID from authentication middleware
-   * @param {Express.Response} res - Express response object
-   * @param {Function} next - Express next middleware function
-   *
-   * @returns {void} - Sends JSON response with task data
-   */
+  // Handles GET /api/v1/tasks/:id
+  // Returns task if it belongs to authenticated user
   async getTask(req, res, next) {
     try {
       const taskId = req.params.id;
@@ -120,21 +74,8 @@ class TaskController {
     }
   }
 
-  /**
-   * Update Task Handler
-   *
-   * Handles PATCH /api/v1/tasks/:id requests.
-   * Updates a specific task, ensuring it belongs to the authenticated user.
-   *
-   * @param {Express.Request} req - Express request object
-   * @param {string} req.params.id - Task ID
-   * @param {Object} req.body - Task data to update (partial update allowed)
-   * @param {string} req.userId - User ID from authentication middleware
-   * @param {Express.Response} res - Express response object
-   * @param {Function} next - Express next middleware function
-   *
-   * @returns {void} - Sends JSON response with updated task
-   */
+  // Handles PATCH /api/v1/tasks/:id
+  // Updates task if it belongs to authenticated user (partial updates allowed)
   async updateTask(req, res, next) {
     try {
       const taskId = req.params.id;
@@ -156,20 +97,8 @@ class TaskController {
     }
   }
 
-  /**
-   * Delete Task Handler
-   *
-   * Handles DELETE /api/v1/tasks/:id requests.
-   * Deletes a specific task, ensuring it belongs to the authenticated user.
-   *
-   * @param {Express.Request} req - Express request object
-   * @param {string} req.params.id - Task ID
-   * @param {string} req.userId - User ID from authentication middleware
-   * @param {Express.Response} res - Express response object
-   * @param {Function} next - Express next middleware function
-   *
-   * @returns {void} - Sends JSON response confirming deletion
-   */
+  // Handles DELETE /api/v1/tasks/:id
+  // Deletes task if it belongs to authenticated user
   async deleteTask(req, res, next) {
     try {
       const taskId = req.params.id;

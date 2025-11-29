@@ -7,7 +7,7 @@ const ApiError = require("../utils/ApiError");
 
 class ErrorHandler {
   // Development mode: include stack trace for debugging
-  static sendErrorForDev(err, res) {
+  static #sendErrorForDev(err, res) {
     console.log("🚀 ~ sendErrorForDev ~ err:", err);
     res.status(err.statusCode).json({
       success: err.success || false,
@@ -17,7 +17,7 @@ class ErrorHandler {
   }
 
   // Production mode: hide stack traces, only show operational error messages
-  static sendErrorForProd(err, res) {
+  static #sendErrorForProd(err, res) {
     // For non-operational errors (programming errors), send generic message
     if (!err.isOperational) {
       // Programming errors: generic message to avoid exposing internals
@@ -35,13 +35,13 @@ class ErrorHandler {
   }
 
   // Converts MongoDB cast errors (invalid ObjectId, date format) to user-friendly messages
-  static handleCastErrorDB(err) {
+  static #handleCastErrorDB(err) {
     const message = `Invalid ${err.path}: ${err.value}`;
     return ApiError.badRequest(message);
   }
 
   // Converts MongoDB duplicate key errors to user-friendly messages
-  static handleDuplicatedFieldsDB(error) {
+  static #handleDuplicatedFieldsDB(error) {
     // Extract the field name that caused the duplicate error
     const duplicateKey = Object.keys(error.keyPattern)[0];
     let message = `${duplicateKey} is already used`;
@@ -50,7 +50,7 @@ class ErrorHandler {
   }
 
   // Aggregates all Mongoose validation errors into a single message
-  static handleValidationError(err) {
+  static #handleValidationError(err) {
     // Extract all validation error messages
     const errors = Object.values(err.errors).map((el) => {
       return el.message;
@@ -59,11 +59,11 @@ class ErrorHandler {
     return ApiError.badRequest(message);
   }
 
-  static handleInvalidJwtSignature() {
+  static #handleInvalidJwtSignature() {
     return ApiError.unauthorized("Invalid token, Please login again ...");
   }
 
-  static handleJwtExpired() {
+  static #handleJwtExpired() {
     return ApiError.unauthorized("Expired token, Please login again ...");
   }
 
@@ -77,36 +77,40 @@ class ErrorHandler {
     let error = { ...err };
     error.message = err.message;
     error.stack = err.stack;
+    console.log("🚀 ~ ErrorHandler ~ handle ~ err.name:", err.name);
+    console.log("🚀 ~ ErrorHandler ~ handle ~ err.code:", err.code);
 
     // Transform specific error types
     switch (err.name) {
       case "JsonWebTokenError":
         // Invalid JWT signature
-        error = ErrorHandler.handleInvalidJwtSignature();
+        error = ErrorHandler.#handleInvalidJwtSignature();
         break;
       case "TokenExpiredError":
         // Expired JWT token
-        error = ErrorHandler.handleJwtExpired();
+        error = ErrorHandler.#handleJwtExpired();
         break;
-      case 11000:
-        // MongoDB duplicate key error (error code 11000)
-        error = ErrorHandler.handleDuplicatedFieldsDB(err);
+      case "MongoServerError":
+        if (err.code === 11000) {
+          // MongoDB duplicate key error (error code 11000)
+          error = ErrorHandler.#handleDuplicatedFieldsDB(err);
+        }
         break;
       case "CastError":
         // MongoDB cast error (invalid ObjectId, date, etc.)
-        error = ErrorHandler.handleCastErrorDB(err);
+        error = ErrorHandler.#handleCastErrorDB(err);
         break;
       case "ValidationError":
         // Mongoose validation error
-        error = ErrorHandler.handleValidationError(err);
+        error = ErrorHandler.#handleValidationError(err);
         break;
     }
 
     // Send error response based on environment
     if (config.NODE_ENV === "development") {
-      ErrorHandler.sendErrorForDev(error, res);
+      ErrorHandler.#sendErrorForDev(error, res);
     } else {
-      ErrorHandler.sendErrorForProd(error, res);
+      ErrorHandler.#sendErrorForProd(error, res);
     }
   }
 }

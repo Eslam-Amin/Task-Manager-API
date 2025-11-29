@@ -1,11 +1,5 @@
-/**
- * Authentication Middleware
- * 
- * This module provides authentication and authorization middleware for protecting routes.
- * It handles JWT token verification, session validation, and role-based access control.
- * 
- * @module middlewares/auth.middleware
- */
+// Authentication middleware protects routes by validating JWT tokens and user sessions.
+// Handles token verification, session validation, and role-based access control.
 
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
@@ -15,7 +9,7 @@ const config = require("../config");
 
 /**
  * Authentication Middleware Class
- * 
+ *
  * Provides methods for protecting routes and validating user authentication.
  * Uses JWT tokens for authentication and session tokens for session management.
  */
@@ -24,20 +18,10 @@ class Authentication {
     this.service = require("../users/user.service.js");
   }
 
-  /**
-   * Private Method: Check User Authentication and Authorization
-   * 
-   * Validates the user's session and checks if the token is still valid.
-   * Performs the following checks:
-   * 1. Verifies user exists in database
-   * 2. Validates session token ID matches stored session
-   * 3. Checks if password was changed after token was issued
-   * 
-   * @private
-   * @param {Object} decoded - Decoded JWT token payload
-   * @param {Function} next - Express next middleware function
-   * @returns {Object|void} - Returns user object if valid, otherwise calls next with error
-   */
+  // Validates user session by checking:
+  // 1. User exists in database
+  // 2. Session token ID matches stored session (prevents token reuse after logout)
+  // 3. Password wasn't changed after token was issued (invalidates old tokens)
   async #checkUser(decoded, next) {
     // Retrieve user from database using userId from token
     const currentUser = await this.service.getOneById(decoded.userId);
@@ -82,27 +66,8 @@ class Authentication {
     return currentUser;
   }
 
-  /**
-   * Protect Middleware
-   * 
-   * Main authentication middleware that protects routes requiring authentication.
-   * 
-   * Process:
-   * 1. Extracts JWT token from Authorization header
-   * 2. Verifies token signature and expiration
-   * 3. Validates user session
-   * 4. Attaches userId and user object to request
-   * 
-   * @param {Express.Request} req - Express request object
-   * @param {Express.Response} res - Express response object
-   * @param {Function} next - Express next middleware function
-   * 
-   * @example
-   * // Usage in routes:
-   * router.use(protect);
-   * // or
-   * router.get('/tasks', protect, taskController.getAllTasks);
-   */
+  // Main authentication middleware. Extracts JWT from Authorization header,
+  // verifies signature and expiration, validates session, then attaches user to request.
   protect = asyncHandler(async (req, res, next) => {
     // Extract token from Authorization header
     let token = req.headers.authorization;
@@ -134,18 +99,8 @@ class Authentication {
     next();
   });
 
-  /**
-   * Role-Based Access Control Middleware
-   * 
-   * Restricts route access based on user roles.
-   * 
-   * @param {...string} roles - Allowed roles for the route
-   * @returns {Function} - Express middleware function
-   * 
-   * @example
-   * // Usage in routes:
-   * router.get('/admin/users', protect, allowedTo('admin'), userController.getAllUsers);
-   */
+  // Role-based access control. Restricts route access to specified roles.
+  // Usage: router.get('/admin', protect, allowedTo('admin'), handler)
   allowedTo = (...roles) =>
     asyncHandler(async (req, res, next) => {
       // Check if user's role is in the allowed roles list

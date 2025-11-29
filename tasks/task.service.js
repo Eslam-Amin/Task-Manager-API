@@ -1,9 +1,11 @@
+// Task service handles business logic for task operations.
+// Enforces user ownership and calculates numeric values for efficient sorting.
+
 const ApiError = require("../utils/ApiError");
 const {
   getStatusValue,
   getPriorityValue,
-  getNormalizedEnum,
-  TASK_STATUS_ENUM
+  getNormalizedEnum
 } = require("./task.enum");
 
 class TaskService {
@@ -17,21 +19,7 @@ class TaskService {
     this.TaskModel = require("./task.model");
   }
 
-  /**
-   * Create a New Task
-   *
-   * Creates a new task in the database with calculated priority and status values.
-   * Priority and status values are used for efficient sorting.
-   *
-   * @param {Object} data - Task data
-   * @param {string} data.title - Task title
-   * @param {string} data.description - Task description
-   * @param {string} data.priority - Task priority (low, medium, high)
-   * @param {string} data.status - Task status (pending, in-progress, completed)
-   * @param {Date} data.dueDate - Task due date
-   * @param {string} data.user - User ID who owns the task
-   * @returns {Promise<Object>} - Newly created task object
-   */
+  // Creates new task with calculated priority value for sorting (0=low, 1=medium, 2=high)
   async createTask(data) {
     const task = new this.TaskModel({
       ...data,
@@ -41,36 +29,15 @@ class TaskService {
     return await task.save();
   }
 
-  /**
-   * Get Tasks with Filtering, Pagination, and Sorting
-   *
-   * Retrieves tasks for a specific user with support for:
-   * - Filtering by status and priority
-   * - Full-text search in title and description
-   * - Sorting by priority or status (ascending/descending)
-   * - Pagination
-   *
-   * @param {Object} reqQuery - Query parameters from request
-   * @param {number} [reqQuery.page=1] - Page number
-   * @param {number} [reqQuery.limit=10] - Items per page
-   * @param {string} [reqQuery.status] - Filter by status (pending, in-progress, completed)
-   * @param {string} [reqQuery.priority] - Filter by priority (low, medium, high)
-   * @param {string} [reqQuery.search] - Search text in title and description
-   * @param {string} [reqQuery.sort] - Sort field (priority, status)
-   * @param {string} [reqQuery.order=desc] - Sort order (asc, desc)
-   * @param {string} userId - ID of the user to get tasks for
-   * @returns {Promise<Object>} - Object containing tasks, pagination info
-   * @returns {Array} tasks - Array of task objects
-   * @returns {number} totalTasks - Total number of tasks matching filter
-   * @returns {number} page - Current page number
-   * @returns {number} limit - Items per page
-   */
+  // Retrieves tasks with filtering, pagination, and sorting.
+  // Supports: status/priority filters, full-text search, sorting by priority/status/dueDate
   async getTasks(userId, reqQuery = {}) {
     const page = parseInt(reqQuery.page) || 1;
     const limit = parseInt(reqQuery.limit) || 10;
     const skip = (page - 1) * limit;
     let filter = { user: userId };
     let sortOption = { dueDate: -1 };
+
     if (reqQuery.status) {
       filter.status = getNormalizedEnum(reqQuery.status, "status");
     }
@@ -95,13 +62,7 @@ class TaskService {
     return { tasks, totalTasks, page, limit };
   }
 
-  /**
-   * Retrieves a task by id and user id
-   * @param {string} id - Task id
-   * @param {string} userId - User id
-   * @returns {Promise<Task>} - Task that matches the given id and user id
-   * @throws {Error} - If the task is not found
-   */
+  // Retrieves task by ID and verifies user ownership
   async getTaskById(id, userId) {
     const task = await this.TaskModel.findById(id);
     if (!task) {
@@ -112,14 +73,7 @@ class TaskService {
     return task;
   }
 
-  /**
-   * Updates a task by id and user id
-   * @param {string} id - Task id
-   * @param {string} userId - User id
-   * @param {Object} data - Task data to update
-   * @returns {Promise<Task>} - Updated task
-   * @throws {Error} - If the task is not found
-   */
+  // Updates task and recalculates priority/status values if changed. Verifies ownership.
   async updateTask(id, userId, data) {
     if (data.priority) {
       data.priorityValue = getPriorityValue(data.priority);
@@ -138,13 +92,7 @@ class TaskService {
     return task;
   }
 
-  /**
-   * Deletes a task by id and user id
-   * @param {string} id - Task id
-   * @param {string} userId - User id
-   * @returns {Promise<void>} - No return value, task is deleted if found
-   * @throws {Error} - If the task is not found
-   */
+  // Deletes task and verifies user ownership
   async deleteTask(id, userId) {
     const task = await this.TaskModel.findByIdAndDelete(id);
     if (!task) {

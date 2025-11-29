@@ -1,3 +1,6 @@
+// User model schema with authentication and session management.
+// Includes virtual fields for fullName and age, plus JWT token generation method.
+
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuid");
@@ -74,16 +77,18 @@ const userSchema = mongoose.Schema(
   }
 );
 
+// Virtual: concatenates firstName and lastName
 userSchema.virtual("fullName").get(function () {
   if (this.firstName && this.lastName)
     return this.firstName + " " + this.lastName;
 });
 
+// Virtual: calculates age from dateOfBirth
 userSchema.virtual("age").get(function () {
   const currentDate = new Date();
   const birthDate = new Date(this.dateOfBirth);
   const age = currentDate.getFullYear() - birthDate.getFullYear();
-  // Adjust age if the birthday hasn't occurred yet this year
+  // Adjust if birthday hasn't occurred yet this year
   if (
     currentDate.getMonth() < birthDate.getMonth() ||
     (currentDate.getMonth() === birthDate.getMonth() &&
@@ -94,6 +99,7 @@ userSchema.virtual("age").get(function () {
   return age;
 });
 
+// Generates JWT token with session token ID for session management
 userSchema.methods.generateToken = async function () {
   const sessionTokenId = uuid.v4();
 

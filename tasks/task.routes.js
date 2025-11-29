@@ -1,17 +1,12 @@
 const express = require("express");
 
-// User Validators
 const taskValidator = require("./task.validator");
-
 const taskController = require("./task.controller");
-
-// Auth Middleware
 const { protect } = require("../middlewares/auth.middleware");
 
-// Router
 const router = express.Router();
 
-// Protect
+// All task routes require authentication
 router.use(protect);
 
 router

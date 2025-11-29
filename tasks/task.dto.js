@@ -1,3 +1,6 @@
+// Task DTO defines the shape of task data returned to clients.
+// Excludes internal fields like priorityValue, statusValue, and user reference.
+
 class TaskDTO {
   static toTaskDTO(task) {
     return {

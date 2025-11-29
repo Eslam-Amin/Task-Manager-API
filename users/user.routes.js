@@ -2,16 +2,14 @@ const express = require("express");
 
 const userController = require("./user.controller");
 const userValidator = require("./user.validator");
-
-// Auth Middleware
 const { protect } = require("../middlewares/auth.middleware");
 
-// Router
 const router = express.Router();
 
+// Public route: get all users
 router.route("/").get(userController.getAllUsers);
 
-// Protect
+// Protected routes: require authentication
 router.use(protect);
 
 router

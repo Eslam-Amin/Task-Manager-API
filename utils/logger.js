@@ -1,47 +1,26 @@
-/**
- * Logger Configuration
- * 
- * This module configures Winston logger for the application.
- * It sets up different logging transports based on the environment.
- * 
- * @module utils/logger
- */
+// Winston logger configuration with environment-specific transports.
+// Development: file logging only. Production: file + MongoDB logging.
 
 const winston = require("winston");
 require("winston-mongodb");
 const config = require("../config");
 
-/**
- * Winston Logger Instance
- * 
- * Configured logger with different transports based on environment:
- * - Development: File logging only
- * - Production: File logging + MongoDB logging
- * 
- * Log Levels:
- * - error: Error level logs
- * - warn: Warning level logs
- * - info: Informational logs
- * - verbose: Verbose logs
- * - debug: Debug logs
- * - silly: Silly logs
- */
 const logger = winston.createLogger({
   transports:
     config.NODE_ENV === "production"
       ? [
-          // File transport - logs to logfile.log
+          // File transport for all logs
           new winston.transports.File({ filename: "logfile.log" }),
           
-          // MongoDB transport - logs to MongoDB database
+          // MongoDB transport for info level and above
           new winston.transports.MongoDB({
             db: config.logger.DB_LOGGER,
             options: { useUnifiedTopology: true },
-            level: "info" // Only log info level and above to MongoDB
+            level: "info"
           })
         ]
       : [
-          // Development: Only file logging
+          // Development: file logging only
           new winston.transports.File({ filename: "logfile.log" })
         ]
 });

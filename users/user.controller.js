@@ -33,7 +33,8 @@ class UserController {
   // @access  Public
   async getUserById(req, res, next) {
     try {
-      const user = await userService.getOneById(req.params.id);
+      const userId = req.params.id === "me" ? req.userId : req.params.id;
+      const user = await userService.getOneById(userId);
       res.status(200).json({
         success: true,
         data: user
@@ -45,9 +46,15 @@ class UserController {
 
   async updateUser(req, res, next) {
     try {
-      const updatedUser = await userService.updateOne(req.params.id, req.body);
+      const userId = req.params.id === "me" ? req.userId : req.params.id;
+      const updatedUser = await userService.updateOne(
+        userId,
+        req.body,
+        req.userId
+      );
       res.status(200).json({
         success: true,
+        message: "User updated successfully",
         data: updatedUser
       });
     } catch (error) {
@@ -56,8 +63,9 @@ class UserController {
   }
 
   async deleteUser(req, res, next) {
+    const userId = req.params.id === "me" ? req.userId : req.params.id;
     try {
-      await userService.deleteOne(req.params.id);
+      await userService.deleteOne(userId, req.userId);
       res.status(200).json({
         success: true,
         message: "User deleted successfully"
